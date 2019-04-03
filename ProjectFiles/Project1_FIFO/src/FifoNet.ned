@@ -47,7 +47,7 @@ network FifoNet
         }
         sink3: Sink {
             parameters:
-                @display("p=319,227");
+                @display("p=329,227");
         }
     connections:
         gen1.out --> fifo1.in;
