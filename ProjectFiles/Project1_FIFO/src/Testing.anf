@@ -11,7 +11,7 @@
       <items xsi:type="scave:Add" filterPattern="file(/Project1_FIFO/src/results/General-#0.vec) AND attr:configname(General) AND attr:runnumber(0) AND module(FifoNet.sink3) AND name(lifetime:vector)" type="VECTOR"/>
       <items xsi:type="scave:LineChart" name="SystemDelay" lineNameFormat="">
         <properties name="Graph.Title" value="System Delay of FIFO Queues"/>
-        <properties name="X.Axis.Title" value="Time (seconds)"/>
+        <properties name="X.Axis.Title" value="Simulation Time (seconds)"/>
         <properties name="Y.Axis.Title" value="System Delay (seconds)"/>
         <properties name="Legend.Display" value="true"/>
         <properties name="Legend.Position" value="Right"/>

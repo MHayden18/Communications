@@ -69,9 +69,9 @@
 \renewcommand{\indent}{\hspace*{\tindent}}
 \begin{document}
 
-\begin{abstract}
-This is my abstract.
-\end{abstract}
+%\begin{abstract}
+%This is my abstract.
+%\end{abstract}
 
 \section*{Omnet Simulation Setup:}
 I utilized the provided FIFO queue sample project as my starting point.
@@ -80,10 +80,21 @@ I needed to make the following changes to ensure I had a working simulation for 
 \begin{enumerate}
 	\item \textbf{FifoNet.ned}  
 
-This file defines the "FifoNet" setup.  I created three identical queues consisting of a source node, a FIFO server, and a sink node, in which all traffic flows through the three nodes.  When a packet arrives at the sink, it generates a packet delay data point as defined in Eq. \#\ref{delay}
+This file defines the "FifoNet" setup.  I created three identical queues consisting of a source node, a FIFO server, and a sink node, in which all traffic flows through the three nodes; this setup is shown in Figure \#\ref{diagram}.  
+
+\begin{figure}[h!]
+	\begin{center}
+	\includegraphics[scale=1.0]{Images/FifoNet.PNG}
+	\vspace{-.25cm}
+	\caption{Diagram showing the three queue setup.}
+	\label{diagram}
+	\end{center}
+\end{figure}
+
+When a packet arrives at the sink, it generates a packet delay data point as defined in Eq. \#\ref{delay}
 \begin{equation}
-\label{delay}
-Packet \, Delay = time_{arrival} - time_{created}
+	\label{delay}
+	Packet \, Delay = time_{arrival} - time_{created}
 \end{equation}
 
 	\item \textbf{omnetpp.ini}
@@ -100,10 +111,87 @@ These times are shown below:
 2 & 0.50 \\ \hline
 3 & 0.25 \\ \hline
 \end{tabular}
+\caption{Interarrival Times}
+\label{InterarrivalTimes}
 \end{table}
 
-The final change was to set the \textbf{sim-time-limit} to one hour.  
+The final change was to set the \textbf{sim-time-limit} to one hour.
 \end{enumerate}
+
+\newpage
+\section*{Results \& Analysis:}
+\subsection*{Utilization:}
+Given the interarrival times and service times of each queue, I calculated values for $\lambda, \, \mu, \, \mathrm{and} \, \rho$ for each queue using the below relationships:
+
+\begin{align*}
+\lambda = \frac{1}{Interarrival \, Time} \hspace{1 cm} \mu = \frac{1}{Service \, Time} \hspace{1cm} \rho = \frac{\lambda}{\mu}
+\end{align*}
+
+Note, each queue has a service time of 0.75 seconds, and the interarrival times stated in Table \#\ref{InterarrivalTimes}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c|c|c|} \hline
+\textbf{Queue \#:} & $\mathbf{\lambda}$ & $\mathbf{\mu}$ & $\mathbf{\rho}$ \\ \hline
+1 & 1.00 & $1.\bar{33}$ & 0.75  \\ \hline
+2 & 2.00 & $1.\bar{33}$ & 1.50 \\ \hline
+3 & 4.00 & $1.\bar{33}$ & 3.00\\ \hline
+\end{tabular}
+\caption{Utilization}
+\label{Utilization}
+\end{table}
+
+Given the values of utilization ($\rho$) shown in Table \#\ref{Utilization} above, I would expect Queue \#1 to have a negligible delay.  However, Queues \#2 and \#3 will have a queue length which will grow to infinity because $\rho > 1$. 
+This makes sense given the meaning of each variable:  for Queue \#1 - packets arrive slower than they are serviced, for the other two queues - packets arrive faster than they can be serviced.
+
+\subsection*{System Delay}
+Figure \#\ref{DelayPlot} shows the system delay of each queue, where sinks \#1-3 correspond to Queues \#1-3.
+
+\begin{figure}[h!]
+	\begin{center}
+	\includegraphics[scale=0.65]{Images/DelayPlot.PNG}
+	\vspace{-.25cm}
+	\caption{System Delay of Queues \#1-3}
+	\label{DelayPlot}
+	\end{center}
+\end{figure}
+
+Packets in Queue \#1 experienced $delay = service \, time$.  However, for Queue \#2 and Queue \#3, their system delays increased rapidly as the queue length increased.  Despite the differences in arrival rates between Queue \#2 and \#3, they both serviced 4800 packets, which is the maximum possible in one hour with a service time = $0.75 \, seconds$.
+This occurs because both of those queues had a utilization $> 1$.  
+Queue \#1 serviced each packet which arrived, servicing a total of 3600 packets.
+
+\newpage
+\subsection*{Queue Length \& Queue Time}
+Tables \#3 and \#4 below show the raw data for the queue length and queue time for each queue.\footnote{The count seems increased by 1, but is caused by the packets arriving at the end of the simulation, that had not been serviced.}
+\vspace{.25cm}
+
+\begin{minipage}{0.5\textwidth}
+	\centering
+	\begin{tabular}{|c|c|c|c|} \hline
+		\textbf{Queue \#} & \textbf{Count} & \textbf{Mean} & \textbf{Std. Dev} \\ \hline
+		1 & 1 & 0.0 & 0.00 \\ \hline
+		2 & 12001 & 1200.0 & 692.91 \\ \hline
+		3 & 19201 & 4800.3 & 2771.50 \\ \hline
+	\end{tabular}
+	\captionof{table}{Queue Length}
+	\label{qlen}
+\end{minipage}  
+\begin{minipage}{0.5\textwidth}
+	\centering
+	\begin{tabular}{|c|c|c|c|} \hline
+		\textbf{Queue \#} & \textbf{Count} & \textbf{Mean} & \textbf{Std. Dev} \\ \hline
+		1 & 3601 & 0.0 & 0.00 \\ \hline
+		2 & 4801 & 600.0 & 346.52 \\ \hline
+		3 & 4801 & 1200.0 & 693.04 \\ \hline
+	\end{tabular}
+	\captionof{table}{Queue Time}
+	\label{qTime}
+\end{minipage}
+\vspace{.25cm}
+
+The data shown above is indicative of the system delays experienced by each packet.
+When the server can keep up with/stay ahead of the queue, arriving packets have no queuing delay:  there is no queue!
+However, once the queue forms, if the arrival rate remains faster than the service rate, the queue simply continues to grow, causing increasing system delays for each packet.
 
 \newpage
 
@@ -164,7 +252,7 @@ network FifoNet
 }
 \end{lstlisting}
 \vspace{-1cm}
-\caption{Defining the network in FifoNet.ned}
+\caption*{Defining the network in FifoNet.ned}
 \end{figure}
 
 \begin{figure}[H]
@@ -188,7 +276,7 @@ cpu-time-limit = 300s
 **.fifo3.serviceTime = 0.75s
 \end{lstlisting}
 \vspace{-1cm}
-\caption{Omnetpp.ini edited to run the three queues with separate parameters}
+\caption*{Omnetpp.ini edited to run the three queues with separate parameters}
 \end{figure}
 
 \end{document}
