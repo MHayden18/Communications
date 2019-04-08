@@ -141,7 +141,10 @@ Note, each queue has a service time of 0.75 seconds, and the interarrival times 
 \label{Utilization}
 \end{table}
 
-Given the values of utilization ($\rho$) shown in Table \#\ref{Utilization} above, I would expect Queue \#1 to have a negligible delay.  However, Queues \#2 and \#3 will have a queue length which will grow to infinity because $\rho > 1$. 
+From these results, I would expect Queue \#1 to have a negligible delay.  
+Because the equation used to calculate $\rho$ breaks down with $\rho > 1$, the calculated utilization of Queues \#2 and \#3 is unattainable.  
+I would expect Queues \#2 and \#3 to be fully utilized, with $\rho_{effective} = 1$.\footnote{$\rho_{effective}$ is the actual utilization of the server, calculated as $1-p_{idle}|_{p_{idle}=0}=1$}
+However, Queues \#2 and \#3 will have a queue length which will grow to infinity.
 This makes sense given the meaning of each variable:  for Queue \#1 - packets arrive slower than they are serviced, for the other two queues - packets arrive faster than they can be serviced.
 
 \subsection*{System Delay}
@@ -156,9 +159,12 @@ Figure \#\ref{DelayPlot} shows the system delay of each queue, where sinks \#1-3
 	\end{center}
 \end{figure}
 
-Packets in Queue \#1 experienced $delay = service \, time$.  However, for Queue \#2 and Queue \#3, their system delays increased rapidly as the queue length increased.  Despite the differences in arrival rates between Queue \#2 and \#3, they both serviced 4800 packets, which is the maximum possible in one hour with a service time = $0.75 \, seconds$.
-This occurs because both of those queues had a utilization $> 1$.  
+Packets in Queue \#1 experienced $delay = service \, time$.  
+However, for Queue \#2 and Queue \#3, their system delays increased rapidly as the queue length increased.  
+Despite the differences in arrival rates between Queue \#2 and \#3, they both serviced 4800 packets.  
 Queue \#1 serviced each packet which arrived, servicing a total of 3600 packets.
+One can see the relationship between the arrival rates, service rates, and throughput.
+When each packet that enters the system is serviced, as in Queue \#1, $throughput = \lambda$; when the queue grows infinitely, as in Queues \#2 and \#3, $throughput = \mu$.
 
 \newpage
 \subsection*{Queue Length \& Queue Time}
@@ -193,6 +199,13 @@ The data shown above is indicative of the system delays experienced by each pack
 When the server can keep up with/stay ahead of the queue, arriving packets have no queuing delay:  there is no queue!
 However, once the queue forms, if the arrival rate remains faster than the service rate, the queue simply continues to grow, causing increasing system delays for each packet.
 
+\section*{Conclusions}
+This project demonstrated the effects of using deterministic arrival times and service times, which leads to deterministic arrival and service rates.
+As long as the service rate is faster than the arrival rate, the system will never queue.
+However, with arrival rates faster than the service rate, the system will become unstable, with the queue growing indefinitely.
+The queue lengths of the unstable systems grow with respect to their arrival rates, with a corresponding increase in system delay as the queue length grows.
+For any systems which always maintain a queue (such as \#s 2 and 3), their servers will be fully utilized.
+Thus, for a system with deterministic rates, the optimal configuration would be with $\mu = \lambda \rightarrow \rho = 1$, which maintains full utilization without a queue.
 \newpage
 
 \section*{Appendix A:  Edited Files}
