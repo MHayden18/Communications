@@ -1,10 +1,112 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scave:Analysis xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:scave="http://www.omnetpp.org/omnetpp/scave">
+<scave:Analysis xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:scave="http://www.omnetpp.org/omnetpp/scave">
   <inputs>
     <inputs name="results/Tandem*.vec"/>
+    <inputs name="/Project2_Tandem/results/TandemQueue-1.0-#0.vec"/>
+    <inputs name="/Project2_Tandem/results/TandemQueue-1.0-#1.vec"/>
+    <inputs name="/Project2_Tandem/results/TandemQueue-1.0-#2.vec"/>
+    <inputs name="/Project2_Tandem/results/TandemQueue-1.0-#0.vec"/>
+    <inputs name="/Project2_Tandem/results/TandemQueue-1.0-#1.vec"/>
+    <inputs name="/Project2_Tandem/results/TandemQueue-1.0-#2.vec"/>
+    <inputs name="/Project2_Tandem/results/TandemQueue-1.0-#0.vec"/>
+    <inputs name="/Project2_Tandem/results/TandemQueue-1.0-#1.vec"/>
+    <inputs name="/Project2_Tandem/results/TandemQueue-1.0-#2.vec"/>
+    <inputs name="/Project2_Tandem/results/TandemQueue-1.0-#0.vec"/>
+    <inputs name="/Project2_Tandem/results/TandemQueue-1.0-#1.vec"/>
+    <inputs name="/Project2_Tandem/results/TandemQueue-1.0-#2.vec"/>
   </inputs>
-  <datasets/>
+  <datasets>
+    <datasets name="Fifo1 Queue Length">
+      <items xsi:type="scave:Add" filterPattern="file(/Project2_Tandem/results/Tandem1-#0.vec) AND attr:configname(Tandem1) AND attr:runnumber(0) AND module(TandemSatellite.fifo1) AND name(qlen:vector)" type="VECTOR"/>
+      <items xsi:type="scave:Add" filterPattern="file(/Project2_Tandem/results/Tandem2-#0.vec) AND attr:configname(Tandem2) AND attr:runnumber(0) AND module(TandemSatellite.fifo1) AND name(qlen:vector)" type="VECTOR"/>
+      <items xsi:type="scave:Add" filterPattern="file(/Project2_Tandem/results/Tandem3-#0.vec) AND attr:configname(Tandem3) AND attr:runnumber(0) AND module(TandemSatellite.fifo1) AND name(qlen:vector)" type="VECTOR"/>
+      <items xsi:type="scave:Apply" operation="mean"/>
+      <items xsi:type="scave:LineChart" name="Fifo1_qlen" lineNameFormat="">
+        <properties name="Graph.Title" value="Fifo1 Average Queue Length"/>
+        <properties name="Legend.Display" value="true"/>
+        <properties name="Legend.Position" value="Inside"/>
+        <properties name="Legend.Anchoring" value="NorthWest"/>
+        <properties name="Line.Display/Tandem1-0-20190409-12:47:24-18164 TandemSatellite.fifo2 Tandem1" value="false"/>
+        <properties name="Line.Display/Tandem2-0-20190409-12:47:37-8172 TandemSatellite.fifo2 Tandem2" value="false"/>
+        <properties name="Line.Display/Tandem3-0-20190409-12:47:44-8172 TandemSatellite.fifo2 Tandem3" value="false"/>
+        <properties name="Line.Name/Tandem1-0-20190409-12:47:24-18164 TandemSatellite.fifo1 Tandem1" value="Interarrival Time = 1s"/>
+        <properties name="Line.Name/Tandem2-0-20190409-12:47:37-8172 TandemSatellite.fifo1 Tandem2" value="Interarrival Time = 0.52s"/>
+        <properties name="Line.Name/Tandem3-0-20190409-12:47:44-8172 TandemSatellite.fifo1 Tandem3" value="Interarrival Time = 0.50s"/>
+        <properties name="Line.Name/Tandem1-0-20190409-13:00:16-13132 Tandem1" value="Interarrival Time = 1.0s"/>
+        <properties name="Line.Name/Tandem2-0-20190409-13:00:25-13132 Tandem2" value="Interarrival Time = 0.52s"/>
+        <properties name="Line.Name/Tandem3-0-20190409-13:00:34-13132 Tandem3" value="Interarrival Time = 0.50s"/>
+      </items>
+    </datasets>
+    <datasets name="Fifo1 Queue Time">
+      <items xsi:type="scave:Add" filterPattern="file(/Project2_Tandem/results/Tandem1-#0.vec) AND attr:configname(Tandem1) AND attr:runnumber(0) AND module(TandemSatellite.fifo1) AND name(queueingTime:vector)" type="VECTOR"/>
+      <items xsi:type="scave:Add" filterPattern="file(/Project2_Tandem/results/Tandem2-#0.vec) AND attr:configname(Tandem2) AND attr:runnumber(0) AND module(TandemSatellite.fifo1) AND name(queueingTime:vector)" type="VECTOR"/>
+      <items xsi:type="scave:Add" filterPattern="file(/Project2_Tandem/results/Tandem3-#0.vec) AND attr:configname(Tandem3) AND attr:runnumber(0) AND module(TandemSatellite.fifo1) AND name(queueingTime:vector)" type="VECTOR"/>
+      <items xsi:type="scave:Apply" operation="mean"/>
+      <items xsi:type="scave:LineChart" name="Fifo1 Queue Time" lineNameFormat="">
+        <properties name="Graph.Title" value="Queue Time"/>
+        <properties name="X.Axis.Title" value="Simulation Time (s)"/>
+        <properties name="Y.Axis.Title" value="Queue Time (s)"/>
+        <properties name="Legend.Display" value="true"/>
+        <properties name="Legend.Position" value="Inside"/>
+        <properties name="Legend.Anchoring" value="NorthWest"/>
+        <properties name="Line.Name/Tandem1-0-20190409-13:00:16-13132 Tandem1" value="Interarrival Time = 1s"/>
+        <properties name="Line.Name/Tandem2-0-20190409-13:00:25-13132 Tandem2" value="Interarrival Time = 0.52s"/>
+        <properties name="Line.Name/Tandem3-0-20190409-13:00:34-13132 Tandem3" value="Interarrival Time = 0.50s"/>
+      </items>
+    </datasets>
+    <datasets name="Lifetime">
+      <items xsi:type="scave:Add" filterPattern="file(/Project2_Tandem/results/Tandem1-#0.vec) AND attr:configname(Tandem1) AND attr:runnumber(0) AND module(TandemSatellite.sink) AND name(lifetime:vector)" type="VECTOR"/>
+      <items xsi:type="scave:Add" filterPattern="file(/Project2_Tandem/results/Tandem2-#0.vec) AND attr:configname(Tandem2) AND attr:runnumber(0) AND module(TandemSatellite.sink) AND name(lifetime:vector)" type="VECTOR"/>
+      <items xsi:type="scave:Add" filterPattern="file(/Project2_Tandem/results/Tandem3-#0.vec) AND attr:configname(Tandem3) AND attr:runnumber(0) AND module(TandemSatellite.sink) AND name(lifetime:vector)" type="VECTOR"/>
+      <items xsi:type="scave:Apply" operation="mean"/>
+      <items xsi:type="scave:LineChart" name="PacketDelay" lineNameFormat="">
+        <properties name="Graph.Title" value="Packet Delay of Varied Interarrival Times"/>
+        <properties name="X.Axis.Title" value="Simulation Time (s)"/>
+        <properties name="Y.Axis.Title" value="Packet Delay (s)"/>
+        <properties name="Legend.Display" value="true"/>
+        <properties name="Legend.Position" value="Inside"/>
+        <properties name="Legend.Anchoring" value="NorthWest"/>
+        <properties name="Line.Name/Tandem1-0-20190409-13:00:16-13132 Tandem1" value="Interarrival Time = 1s"/>
+        <properties name="Line.Name/Tandem2-0-20190409-13:00:25-13132 Tandem2" value="Interarrival Time = 0.52s"/>
+        <properties name="Line.Name/Tandem3-0-20190409-13:00:34-13132 Tandem3" value="Interarrival Time = 0.50s"/>
+      </items>
+    </datasets>
+    <datasets name="Fifo2_QueueLength">
+      <items xsi:type="scave:Add" filterPattern="file(/Project2_Tandem/results/Tandem1-#0.vec) AND attr:configname(Tandem1) AND attr:runnumber(0) AND module(TandemSatellite.fifo2) AND name(qlen:vector)" type="VECTOR"/>
+      <items xsi:type="scave:Add" filterPattern="file(/Project2_Tandem/results/Tandem2-#0.vec) AND attr:configname(Tandem2) AND attr:runnumber(0) AND module(TandemSatellite.fifo2) AND name(qlen:vector)" type="VECTOR"/>
+      <items xsi:type="scave:Add" filterPattern="file(/Project2_Tandem/results/Tandem3-#0.vec) AND attr:configname(Tandem3) AND attr:runnumber(0) AND module(TandemSatellite.fifo2) AND name(qlen:vector)" type="VECTOR"/>
+      <items xsi:type="scave:Apply" operation="mean"/>
+      <items xsi:type="scave:LineChart" name="Fifo2 Queue Length" lineNameFormat="">
+        <properties name="Graph.Title" value="Fifo 2 Queue Lenght"/>
+        <properties name="X.Axis.Title" value="Simulation Time (s)"/>
+        <properties name="Y.Axis.Title" value="Queue Length (packets)"/>
+        <properties name="Legend.Display" value="true"/>
+        <properties name="Legend.Position" value="Inside"/>
+        <properties name="Legend.Anchoring" value="NorthWest"/>
+        <properties name="Line.Name/Tandem1-0-20190409-13:00:16-13132 Tandem1" value="Interarrival Time = 1s"/>
+        <properties name="Line.Name/Tandem2-0-20190409-13:00:25-13132 Tandem2" value="Interarrival Time = 0.52s"/>
+        <properties name="Line.Name/Tandem3-0-20190409-13:00:34-13132 Tandem3" value="Interarrival Time = 0.50s"/>
+      </items>
+    </datasets>
+    <datasets name="FIfo2 Queue Time">
+      <items xsi:type="scave:Add" filterPattern="file(/Project2_Tandem/results/Tandem1-#0.vec) AND attr:configname(Tandem1) AND attr:runnumber(0) AND module(TandemSatellite.fifo2) AND name(queueingTime:vector)" type="VECTOR"/>
+      <items xsi:type="scave:Add" filterPattern="file(/Project2_Tandem/results/Tandem2-#0.vec) AND attr:configname(Tandem2) AND attr:runnumber(0) AND module(TandemSatellite.fifo2) AND name(queueingTime:vector)" type="VECTOR"/>
+      <items xsi:type="scave:Add" filterPattern="file(/Project2_Tandem/results/Tandem3-#0.vec) AND attr:configname(Tandem3) AND attr:runnumber(0) AND module(TandemSatellite.fifo2) AND name(queueingTime:vector)" type="VECTOR"/>
+      <items xsi:type="scave:Apply" operation="mean"/>
+      <items xsi:type="scave:LineChart" name="Fifo 2 Queue Time" lineNameFormat="">
+        <properties name="Graph.Title" value="Fifo 2 Queue Time"/>
+        <properties name="X.Axis.Title" value="Simulation Time (s)"/>
+        <properties name="Y.Axis.Title" value="Queue Time (s)"/>
+        <properties name="Legend.Display" value="true"/>
+        <properties name="Legend.Position" value="Inside"/>
+        <properties name="Legend.Anchoring" value="NorthWest"/>
+        <properties name="Line.Name/Tandem1-0-20190409-13:00:16-13132 Tandem1" value="Interarrival Time = 1s"/>
+        <properties name="Line.Name/Tandem2-0-20190409-13:00:25-13132 Tandem2" value="Interarrival Time = 0.52s"/>
+        <properties name="Line.Name/Tandem3-0-20190409-13:00:34-13132 Tandem3" value="Interarrival Time = 0.50s"/>
+      </items>
+    </datasets>
+  </datasets>
   <chartSheets>
-    <chartSheets name="default"/>
+    <chartSheets name="default" charts="//@datasets/@datasets.1/@items.4 //@datasets/@datasets.0/@items.4 //@datasets/@datasets.3/@items.4 //@datasets/@datasets.4/@items.4 //@datasets/@datasets.2/@items.4"/>
   </chartSheets>
 </scave:Analysis>
