@@ -9,6 +9,7 @@
       <items xsi:type="scave:Add" filterPattern="file(/Project1_FIFO/src/results/General-#0.vec) AND attr:configname(General) AND attr:runnumber(0) AND module(FifoNet.sink1) AND name(lifetime:vector)" type="VECTOR"/>
       <items xsi:type="scave:Add" filterPattern="file(/Project1_FIFO/src/results/General-#0.vec) AND attr:configname(General) AND attr:runnumber(0) AND module(FifoNet.sink2) AND name(lifetime:vector)" type="VECTOR"/>
       <items xsi:type="scave:Add" filterPattern="file(/Project1_FIFO/src/results/General-#0.vec) AND attr:configname(General) AND attr:runnumber(0) AND module(FifoNet.sink3) AND name(lifetime:vector)" type="VECTOR"/>
+      <items xsi:type="scave:Compute" operation="mean"/>
       <items xsi:type="scave:LineChart" name="SystemDelay" lineNameFormat="">
         <properties name="Graph.Title" value="System Delay of FIFO Queues"/>
         <properties name="X.Axis.Title" value="Simulation Time (seconds)"/>
@@ -19,13 +20,30 @@
         <properties name="Line.Name/FifoNet.sink1" value="Interarrival Time = 1 second"/>
         <properties name="Line.Name/FifoNet.sink2" value="Interarrival Time = 0.50 seconds"/>
         <properties name="Line.Name/FifoNet.sink3" value="Interarrival Tiem = 0.25 seconds"/>
+        <properties name="Line.Display/C:/Users/Micah Hayden/Documents/AFIT/SP2019/CSCE 654 - Communications/ProjectFiles/Project1_FIFO/.computed/computed5803449114685023248.vec FifoNet.sink1 mean(lifetime:vector)" value="false"/>
+        <properties name="Line.Display/C:/Users/Micah Hayden/Documents/AFIT/SP2019/CSCE 654 - Communications/ProjectFiles/Project1_FIFO/.computed/computed5803449114685023248.vec FifoNet.sink2 mean(lifetime:vector)" value="false"/>
+        <properties name="Line.Display/C:/Users/Micah Hayden/Documents/AFIT/SP2019/CSCE 654 - Communications/ProjectFiles/Project1_FIFO/.computed/computed5803449114685023248.vec FifoNet.sink3 mean(lifetime:vector)" value="false"/>
+        <properties name="Line.Name//Project1_FIFO/src/results/General-#0.vec FifoNet.sink1 lifetime:vector" value="Case 1:  Interarrival Time = 1s"/>
+        <properties name="Line.Name//Project1_FIFO/src/results/General-#0.vec FifoNet.sink2 lifetime:vector" value="Case 2:  Interarrival Time = 0.5s"/>
+        <properties name="Line.Name//Project1_FIFO/src/results/General-#0.vec FifoNet.sink3 lifetime:vector" value="Case 3:  Interarrival Time = 0.25s"/>
       </items>
-      <items xsi:type="scave:HistogramChart" name="">
-        <properties name="Hist.Data" value="Count"/>
+      <items xsi:type="scave:LineChart" name="Mean Packet Delay" lineNameFormat="">
+        <properties name="Graph.Title" value="Mean Packet Delay"/>
+        <properties name="X.Axis.Title" value="Simulation Time (s)"/>
+        <properties name="Y.Axis.Title" value="Packet Delay (s)"/>
+        <properties name="Legend.Display" value="true"/>
+        <properties name="Legend.Position" value="Inside"/>
+        <properties name="Legend.Anchoring" value="NorthWest"/>
+        <properties name="Line.Display//Project1_FIFO/src/results/General-#0.vec FifoNet.sink1 lifetime:vector" value="false"/>
+        <properties name="Line.Display//Project1_FIFO/src/results/General-#0.vec FifoNet.sink2 lifetime:vector" value="false"/>
+        <properties name="Line.Display//Project1_FIFO/src/results/General-#0.vec FifoNet.sink3 lifetime:vector" value="false"/>
+        <properties name="Line.Name/C:/Users/Micah Hayden/Documents/AFIT/SP2019/CSCE 654 - Communications/ProjectFiles/Project1_FIFO/.computed/computed5803449114685023248.vec FifoNet.sink1 mean(lifetime:vector)" value="Case 1:  Interarrival Time = 1s"/>
+        <properties name="Line.Name/C:/Users/Micah Hayden/Documents/AFIT/SP2019/CSCE 654 - Communications/ProjectFiles/Project1_FIFO/.computed/computed5803449114685023248.vec FifoNet.sink2 mean(lifetime:vector)" value="Case 2:  Interarrival Time - 0.5s"/>
+        <properties name="Line.Name/C:/Users/Micah Hayden/Documents/AFIT/SP2019/CSCE 654 - Communications/ProjectFiles/Project1_FIFO/.computed/computed5803449114685023248.vec FifoNet.sink3 mean(lifetime:vector)" value="Case 3:  Interarrival Time = 0.25s"/>
       </items>
     </datasets>
   </datasets>
   <chartSheets>
-    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.3"/>
+    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.4 //@datasets/@datasets.0/@items.5"/>
   </chartSheets>
 </scave:Analysis>
