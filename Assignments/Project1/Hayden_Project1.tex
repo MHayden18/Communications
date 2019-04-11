@@ -147,27 +147,201 @@ I would expect Queues \#2 and \#3 to be fully utilized, with $\rho_{effective} =
 However, Queues \#2 and \#3 will have a queue length which will grow to infinity.
 This makes sense given the meaning of each variable:  for Queue \#1 - packets arrive slower than they are serviced, for the other two queues - packets arrive faster than they can be serviced.
 
+The utilization is directly related to the number of packets which the queue processes. 
+This quantity, E[X], can be found analytically, using the equation below.
+
+\begin{minipage}{.5\textwidth}
+\begin{align*}
+\text{IF} \rho < 1 & \\
+	& E[X] = \frac{\text{simtime}}{\lambda} \\
+\text{IF} \rho \geq 1 & \\
+	& E[X] = \frac{\text{simtime}}{\mu} \\
+\end{align*}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+\centering
+\begin{tabular}{|c|c|c|} \hline
+\textbf{Queue \#:} & $\mathbf{\rho}$ & \textbf{E[X]} \\ \hline
+1 &  0.75 & 3600 \\ \hline
+2 &  1.50 & 4800 \\ \hline
+3 &  3.00 & 4800 \\ \hline
+\end{tabular}
+\captionof{table}{Expected Packets Processed}
+\label{ExpectUtilization}
+\end{minipage}
+
+\newpage
 \subsection*{System Delay}
-Figure \#\ref{DelayPlot} shows the system delay of each queue.
+
+\subsubsection*{Expected Results}
+\label{sec:expectation}
+Because the queue has no variation in service time or interarrival rate (for a given trial), the expected system delay can be found by analyzing a sequence of arrivals because they will have the same relationships as an arithmetic sequence.
+I will walk through this analysis for each of the three cases:
+\begin{enumerate}
+	\item[] \textbf{Case 1:  Interarrival Time = 1s}
+	
+	\begin{table}[h!]
+		\centering
+		\begin{tabular}{|c|c|c|c|} \hline
+		\textbf{Packet \#:} & \textbf{Arrival Time (s)} & \textbf{Finish Time (s)} & \textbf{Expected Delay} \\ \hline
+		1 & 0 & 0.75 & 0.75 \\ \hline
+		2 & 1 & 1.75 & 0.75 \\ \hline
+		3 & 2 & 2.75 & 0.75 \\ \hline
+		\end{tabular}
+		\caption{Expected Packet Delay with $\lambda = 1 \frac{packets}{second}$}
+		\label{Case1_Delay}
+	\end{table}
+
+From this data, the following relationships can be established for packet $n$:
+
+\begin{align*}
+\text{Packet Delay}_n &= 0.75s \\
+\text{Finish Time}_{n} &= (n - 1) + 0.75s
+\end{align*}
+
+	\item[] \textbf{Case 2:  Interarrival Time = 0.50s}
+
+	\begin{table}[h!]
+		\centering
+		\begin{tabular}{|c|c|c|c|} \hline
+		\textbf{Packet \#:} & \textbf{Arrival Time (s)} & \textbf{Finish Time (s)} & \textbf{Expected Delay} \\ \hline
+		1 & 0 & 0.75 & 0.75 \\ \hline
+		2 & 0.5 & 1.50 & 1.00 \\ \hline
+		3 & 1.0 & 2.25 & 1.25 \\ \hline
+		\end{tabular}
+		\caption{Expected Packet Delay with $\lambda = 2 \frac{packets}{second}$}
+		\label{Case2_Delay}
+	\end{table}
+
+The following equation thus defines the finish time and packet delay for packet $n$:
+\begin{align*}
+\text{Finish Time}_n &= n \cdot 0.75 \\
+\text{Packet Delay}_n &= 0.75 + (n-1) \cdot 0.25 \\
+\end{align*}
+
+Thus, given the expectation of servicing 4800 packets, the final packet would have the following finish time and delay:
+\begin{align*}
+\text{Finish Time}_{4800} &= 4800 \cdot 0.75  \\
+						&= 3600s \\
+\text{Packet Delay}_{4800} &= 0.75 + (4799) \cdot 0.25  \\
+				  &= 1200.5s
+\end{align*}
+
+Because the delays grow linearly, the mean delay will be the average of the first and last packet's delays:
+\begin{align*}
+\text{Average Delay}_{Case \, 2} &= \frac{0.75 + 1200.5}{2} \\
+								&= 600.625s \\
+\end{align*}
+
+\newpage
+\item[] \textbf{Case 3:  Interarrival Time = 0.25s}
+
+	\begin{table}[h!]
+		\centering
+		\begin{tabular}{|c|c|c|c|} \hline
+		\textbf{Packet \#:} & \textbf{Arrival Time (s)} & \textbf{Finish Time (s)} & \textbf{Expected Delay} \\ \hline
+		1 & 0 & 0.75 & 0.75 \\ \hline
+		2 & 0.25 & 1.50 & 1.25 \\ \hline
+		3 & 0.50 & 2.25 & 1.75 \\ \hline
+		\end{tabular}
+		\caption{Expected Packet Delay with $\lambda = 4 \frac{packets}{second}$}
+		\label{Case3_Delay}
+	\end{table}
+
+The following equations thus define the finish time and packet delay for packet $n$:
+\begin{align*}
+\text{Finish Time}_n &= n \cdot 0.75 \\
+\text{Packet Delay}_n &= 0.75 + (n-1) \cdot 0.50 \\
+\end{align*}
+
+Thus, given the expectation of servicing 4800 packets, the final packet would have the following finish time and delay:
+\begin{align*}
+\text{Finish Time}_{4800} &= 4800 \cdot 0.75  \\
+						&= 3600s \\
+\text{Delay}_{4800} &= 0.75 + (4799) \cdot 0.50  \\
+				  &= 2400.25s
+\end{align*}
+
+Because the delays grow linearly, the mean delay will be the average of the first and last packet's delays:
+\begin{align*}
+\text{Average Delay}_{Case \, 3} &= \frac{0.75 + 2400.25}{2} \\
+								&= 1200.50s \\
+\end{align*}
+
+\end{enumerate}
+
+\vspace{-1cm}
+
+\subsubsection*{Simulation Results}
+Figure \#\ref{DelayPlot} shows the instantaneous system delay of each queue.
+Packets in Queue \#1 experienced $\text{Packet Delay} = 0.75s$, while the packet delay steadily increased for packets in Queues 2 and 3.
 
 \begin{figure}[h!]
 	\begin{center}
-	\includegraphics[scale=0.65]{Images/DelayPlot.PNG}
+	\includegraphics[scale=0.7]{Images/DelayPlot.PNG}
 	\vspace{-.25cm}
-	\caption{System Delay of Queues \#1-3}
+	\caption{Instantaneous System Delay}
 	\label{DelayPlot}
 	\end{center}
 \end{figure}
 
-Packets in Queue \#1 experienced $delay = service \, time$.  
-However, for Queue \#2 and Queue \#3, their system delays increased rapidly as the queue length increased.  
-Despite the differences in arrival rates between Queue \#2 and \#3, they both serviced 4800 packets.  
+\newpage
+
+Table \#\ref{AvgPacketDelay} shows the simulation data for the packet delay for each queue.
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c|c|} \hline
+\textbf{Queue \#:} & \textbf{Average Packet Delay (s)} & \textbf{Std. Dev} \\ \hline
+1 & 0.75 & 0.0  \\ \hline
+2 & 600.63 & 346.45   \\ \hline
+3 & 1200.50 & 692.89 \\ \hline
+\end{tabular}
+\caption{Average Packet Delays }
+\label{AvgPacketDelay}
+\end{table}
+
+These results matched the expected results given analysis of the arrival and service rates.
+The system delays for Queue \#2 and Queue \#3 increased linearly as the queue length increased.  
+The standard deviation indicates how quickly the average packet delay increases for each case.
+
 Queue \#1 serviced each packet which arrived, servicing a total of 3600 packets.
-One can see the relationship between the arrival rates, service rates, and throughput.
+Despite the differences in arrival rates between Queue \#2 and \#3, they both serviced 4800 packets.  
+One can see the relationship between the arrival rates, service rates, and throughput from these results.
 When each packet that enters the system is serviced, as in Queue \#1, $throughput = \lambda$; when the queue grows infinitely, as in Queues \#2 and \#3, $throughput = \mu$.
 
-\newpage
 \subsection*{Queue Length \& Queue Time}
+\subsubsection*{Expected Results}
+Because the arrival rates and service times are constant, the queue will grow at the following rate:
+\begin{equation}
+\label{eq:qlen}
+\text{Inst. Queue Length} = t \cdot (\frac{1}{\lambda} - \frac{1}{\mu}) \\
+\end{equation}
+\begin{equation}
+\label{eq:avgQlen}
+\text{Mean Queue Length} = \frac{1}{2} \cdot (\text{Inst. Queue Length}_{final} - 0)
+						= \frac{1}{2} \cdot \text{Inst. Queue Length}_{final}
+\end{equation}
+
+Using Equation \#'s \ref{eq:qlen} and \ref{eq:avgQlen}, I calculated the final queue length and mean queue length for each queue, given a final time of 3600 seconds.\footnote{If $\frac{1}{\lambda} - \frac{1}{\mu} < 0$, this would indicate a shortening of the queue.  For this project, this result indicates the queue length is always 0.}
+
+\begin{table}[h!]
+	\centering
+	\begin{tabular}{|c|c|c|} \hline
+	\textbf{Queue \#} & \textbf{Final Queue Length (packets)} & \textbf{Mean Queue Length (packets)} \\ \hline
+	1 & 0 & 0 \\ \hline
+	2 & 2400 & 1200 \\ \hline
+	3 & 9600 & 4800 \\ \hline
+	\end{tabular}
+	\label{tab:expect_qlen}
+	\caption{Expected Queue Lengths}
+\end{table}
+
+The queue time is directly related to the queue length, at the time of a packets arrival.
+Section \ref{sec:expectation} details the delay of the final packet serviced in each queue, which would each have a queue time = $\text{packet delay} - 0.75s$.
+The mean queue time should be half of the queue time of the final packet.
+
+\subsubsection*{Simulation Results}
 Tables \#3 and \#4 below show the raw data for the queue length and queue time for each queue.\footnote{The count seems increased by 1, but is caused by the packets arriving at the end of the simulation, that had not been serviced.}
 \vspace{.25cm}
 
@@ -198,17 +372,40 @@ Tables \#3 and \#4 below show the raw data for the queue length and queue time f
 The data shown above is indicative of the system delays experienced by each packet.
 When the server can keep up with/stay ahead of the queue, arriving packets have no queuing delay:  there is no queue!
 However, once the queue forms, if the arrival rate remains faster than the service rate, the queue simply continues to grow, causing increasing system delays for each packet.
+These results match the expected results from the prior analysis.
 
 \section*{Conclusions}
-This project demonstrated the effects of using deterministic arrival times and service times, which leads to deterministic arrival and service rates.
+This project demonstrated the effects of using constant arrival and service times, which leads to constant arrival and service rates.
+Because any queue length, queue time, or packet delay increases follow a linear pattern, they can be analyzed using arithmetic relationships. 
+The simulation results directly matched those gained through analytic methods.
+
 As long as the service rate is faster than the arrival rate, the system will never queue.
 However, with arrival rates faster than the service rate, the system will become unstable, with the queue growing indefinitely.
 The queue lengths of the unstable systems grow with respect to their arrival rates, with a corresponding increase in system delay as the queue length grows.
 For any systems which always maintain a queue (such as \#s 2 and 3), their servers will be fully utilized.
-Thus, for a system with deterministic rates, the optimal configuration would be with $\mu = \lambda \rightarrow \rho = 1$, which maintains full utilization without a queue.
-\newpage
+Thus, for a system with constant rates, the optimal configuration would be with $\mu = \lambda \rightarrow \rho = 1$, which maintains full utilization without a queue.
 
-\section*{Appendix A:  Edited Files}
+\newpage
+\section*{Appendix A:  Graphs of Queue Length and Time}
+\begin{figure}[h!]
+	\begin{center}
+	\includegraphics[scale=0.65]{Images/QLen.PNG}
+	\vspace{-.25cm}
+	\caption{Instantaneous Queue Length}
+	\label{fig:qlen}
+	\end{center}
+\end{figure}
+
+\begin{figure}[h!]
+	\begin{center}
+	\includegraphics[scale=0.65]{Images/QTime.PNG}
+	\vspace{-.25cm}
+	\caption{Inst. Queue Time}
+	\label{fig:qtime}
+	\end{center}
+\end{figure}
+
+\section*{Appendix B:  Edited Files}
 
 \begin{figure}[H]
 \label{FifoNet}

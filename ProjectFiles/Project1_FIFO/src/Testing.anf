@@ -26,6 +26,12 @@
         <properties name="Line.Name//Project1_FIFO/src/results/General-#0.vec FifoNet.sink1 lifetime:vector" value="Case 1:  Interarrival Time = 1s"/>
         <properties name="Line.Name//Project1_FIFO/src/results/General-#0.vec FifoNet.sink2 lifetime:vector" value="Case 2:  Interarrival Time = 0.5s"/>
         <properties name="Line.Name//Project1_FIFO/src/results/General-#0.vec FifoNet.sink3 lifetime:vector" value="Case 3:  Interarrival Time = 0.25s"/>
+        <properties name="Line.Display/C:/Users/Micah Hayden/Documents/AFIT/SP2019/CSCE 654 - Communications/ProjectFiles/Project1_FIFO/.computed/computed7609048655816526177.vec FifoNet.sink1 mean(lifetime:vector)" value="false"/>
+        <properties name="Line.Display/C:/Users/Micah Hayden/Documents/AFIT/SP2019/CSCE 654 - Communications/ProjectFiles/Project1_FIFO/.computed/computed7609048655816526177.vec FifoNet.sink2 mean(lifetime:vector)" value="false"/>
+        <properties name="Line.Display/C:/Users/Micah Hayden/Documents/AFIT/SP2019/CSCE 654 - Communications/ProjectFiles/Project1_FIFO/.computed/computed7609048655816526177.vec FifoNet.sink3 mean(lifetime:vector)" value="false"/>
+        <properties name="Line.Display/C:/Users/Micah Hayden/Documents/AFIT/SP2019/CSCE 654 - Communications/ProjectFiles/Project1_FIFO/.computed/computed1589024127148939484.vec FifoNet.sink2 mean(lifetime:vector)" value="false"/>
+        <properties name="Line.Display/C:/Users/Micah Hayden/Documents/AFIT/SP2019/CSCE 654 - Communications/ProjectFiles/Project1_FIFO/.computed/computed1589024127148939484.vec FifoNet.sink1 mean(lifetime:vector)" value="false"/>
+        <properties name="Line.Display/C:/Users/Micah Hayden/Documents/AFIT/SP2019/CSCE 654 - Communications/ProjectFiles/Project1_FIFO/.computed/computed1589024127148939484.vec FifoNet.sink3 mean(lifetime:vector)" value="false"/>
       </items>
       <items xsi:type="scave:LineChart" name="Mean Packet Delay" lineNameFormat="">
         <properties name="Graph.Title" value="Mean Packet Delay"/>
@@ -42,8 +48,34 @@
         <properties name="Line.Name/C:/Users/Micah Hayden/Documents/AFIT/SP2019/CSCE 654 - Communications/ProjectFiles/Project1_FIFO/.computed/computed5803449114685023248.vec FifoNet.sink3 mean(lifetime:vector)" value="Case 3:  Interarrival Time = 0.25s"/>
       </items>
     </datasets>
+    <datasets name="QueueLength">
+      <items xsi:type="scave:Add" filterPattern="name(qlen:vector) AND module(FifoNet.fifo*)" type="VECTOR"/>
+      <items xsi:type="scave:LineChart" name="QLen" lineNameFormat="">
+        <properties name="X.Axis.Title" value="Simulation Time (s)"/>
+        <properties name="Y.Axis.Title" value="Queue Length (packets)"/>
+        <properties name="Legend.Display" value="true"/>
+        <properties name="Legend.Position" value="Inside"/>
+        <properties name="Legend.Anchoring" value="NorthWest"/>
+        <properties name="Line.Name/FifoNet.fifo1" value="Case 1:  Interarrival Time = 1s"/>
+        <properties name="Line.Name/FifoNet.fifo2" value="Case 2:  Interarrival Time = 0.50s"/>
+        <properties name="Line.Name/FifoNet.fifo3" value="Case 3:  Interarrival Time = 0.25s"/>
+      </items>
+    </datasets>
+    <datasets name="QTime">
+      <items xsi:type="scave:Add" filterPattern="name(queueingTime:vector) AND module(FifoNet.fifo*)" type="VECTOR"/>
+      <items xsi:type="scave:LineChart" name="QTime" lineNameFormat="">
+        <properties name="X.Axis.Title" value="Simulation Time (s)"/>
+        <properties name="Y.Axis.Title" value="Queue Time (s)"/>
+        <properties name="Legend.Display" value="true"/>
+        <properties name="Legend.Position" value="Inside"/>
+        <properties name="Legend.Anchoring" value="NorthWest"/>
+        <properties name="Line.Name/FifoNet.fifo1" value="Case 1:  Interarrival Time = 1s"/>
+        <properties name="Line.Name/FifoNet.fifo2" value="Case 2:  Interarrival Time = 0.50s"/>
+        <properties name="Line.Name/FifoNet.fifo3" value="Case 3:  Interarrival Time = 0.25s"/>
+      </items>
+    </datasets>
   </datasets>
   <chartSheets>
-    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.4 //@datasets/@datasets.0/@items.5"/>
+    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.4 //@datasets/@datasets.0/@items.5 //@datasets/@datasets.1/@items.1 //@datasets/@datasets.2/@items.1"/>
   </chartSheets>
 </scave:Analysis>
