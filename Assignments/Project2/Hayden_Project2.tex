@@ -150,7 +150,7 @@ Case 3 has an infinite expectation because it is an unstable system with $\rho =
 \begin{tabular}{|c|c|c|} \hline
 \textbf{Case \#} & \textbf{E[r]$_{actual}$} & \textbf{E[w]$_{actual}$} \\ \hline
 1 & 2.28 & 1.00  \\ \hline
-2 & 25.28 & 24.00 \\ \hline
+2 & 26.28 & 24.00 \\ \hline
 3 & $\infty$ & $\infty$ \\ \hline 
 \end{tabular}
 \caption{Expected System and Queue Delay}
@@ -172,11 +172,25 @@ Figure \#\ref{DelayPlot} shows the system delay of each case.
 
 This simulation matched the expected system delays calculated previously, with averages of 2.24 seconds, 24.71 seconds, and 136.75 seconds, respectively for Cases 1-3.
 
-Case \#1 had a $1.8\%$ difference from the expected value, while Case \#2 had a $2.3\$$ difference.
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c|} \hline
+\textbf{Case \#} & \textbf{Mean Packet Delay (s)} \\ \hline
+1 & 2.24  \\ \hline
+2 & 24.71 \\ \hline
+3 & 136.75  \\ \hline 
+\end{tabular}
+\caption{Simulated Mean Packet Delay}
+\label{tab:meanPacketDelay}
+\end{table}
+
+
+Case \#1 had a $1.8\%$ difference from the expected value, while Case \#2 had a $6.0\%$ difference.
 Despite only having a difference of $0.02s$ in interarrival times, the average delay of Cases 2 and 3 were significantly different. 
-On the other hand, the mean delay for Case \#3 was 136.75 seconds.  
+The mean delay for Case \#3 was 136.75 seconds.  
 This occurs because when $\rho = 1$, the system is unstable and the queue will grow to indefinitely.
 
+\newpage
 \subsection*{Queue Length \& Queue Time}
 
 \subsubsection*{Expected Results}
@@ -269,7 +283,10 @@ When $\lambda$ is much less than $\mu$, the system is able to keep up, and produ
 As $\lambda$ approaches $\mu$, the queue will increase in length; however, as long as $\lambda < \mu$, the system will still be stable.
 Once $\lambda = \mu$, the system becomes unstable, and will have a system delay and queue length that will grow indefinitely.
 
-Another interesting outcome of this experiment was seeing the effects of the propagation delay.  One would expect the two queues to have identical outcomes; however, they were slightly different for all simulations.
+Another interesting outcome of this experiment was seeing the effects of the propagation delay.  
+One would expect the two queues to have identical times in the long run; however, they were slightly different for all simulations.
+Because of these variations, using the average queue times and average lifetime to calculate the propagation delay produced a slightly different value than the constant specified in the simulation, as shown in Table \#\ref{tab:calcPropDelay}.
+This shows the inherent complexity of a system of queues, even when the queues have the same parameters for expected arrival rates and service rates.
 
 
 \newpage
