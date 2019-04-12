@@ -73,10 +73,10 @@
 %This is my abstract.
 %\end{abstract}
 
-\section*{Simulation Setup:}
+\section{Simulation Setup:}
 I utilized the provided FIFO queue sample project as the starting point for my simulation.
 
-\subsection*{Network Configuration}  
+\subsection{Network Configuration}  
 My "Tandem Satellite" network consisted of one generator, two FIFO queues/servers, a satellite node, and a sink node.  
 The generator, queue, and sink nodes are all the same as given in the FIFO sample (and the same as Project \#1).  
 I defined the satellite node as a simple node which handled any incoming message by forwarding it to the following node immediately.  
@@ -105,7 +105,7 @@ When a packet arrives at the sink, it generates a packet delay data point as def
 \end{equation}
 
 \newpage
-\subsection*{Simulation Time:}  
+\subsection{Simulation Time:}  
 Before determining a simulation run-time, I calculated $\lambda$, $\mu$, and $\rho$ from the mean service time and interarrival times specified.
 Table \#\ref{Parameters} below.
 \begin{table}[h!]
@@ -120,17 +120,19 @@ Table \#\ref{Parameters} below.
 \label{Parameters}
 \end{table}
 
-Based on these parameters, Case \#3 should become unstable, given a long enough simulation.
+Given enough time, Cases 1 and 2 will tend to an average value, as discussed in section \ref{sec:SysDelay}. 
+Case \#3 should become unstable, growing its queue indefinitely.
 I started by running the three cases for 1 hour each.  
 However, when I plotted the data, the second case with $t_{IA}=0.52 \, seconds$ actually had a longer average system delay than the final case with $t_{IA}=0.50 \, seconds$, and similar average queue lengths.  
-Based on this result, I decided that a longer simulation was needed.  
+Based on this result, I decided that a longer simulation was needed to allow Cases 1 and 2 to achieve stability.  
 My final simulation run-time was 10 hours, which generated a result aligning with the expectation given the relationship between $\lambda$ and $\mu$.
 
-\section*{Results \& Analysis:}
+\section{Results \& Analysis:}
 
-\subsection*{System Delay}
+\subsection{System Delay}
+\label{sec:SysDelay}
 
-\subsubsection*{Expected Results}
+\subsubsection{Expected Results}
 Using $\lambda$ and $\mu$, and the calculated values for $\rho$, one can calculate the expected time in the system, $E[r]$; and the expected time in the queue $E[w]$, using the relationships below, derived from Little's Law.
 \begin{align*}
 E[r]_{system} = \frac{1}{\mu - \lambda} \hspace{0.15\textwidth} E[w]_{queue} = \frac{\rho}{\mu - \lambda} \\
@@ -158,7 +160,7 @@ Case 3 has an infinite expectation because it is an unstable system with $\rho =
 \end{table}
 
 \newpage
-\subsubsection*{Simulation Results}
+\subsubsection{Simulation Results}
 Figure \#\ref{DelayPlot} shows the system delay of each case.
 
 \begin{figure}[h!]
@@ -191,9 +193,9 @@ The mean delay for Case \#3 was 136.75 seconds.
 This occurs because when $\rho = 1$, the system is unstable and the queue will grow to indefinitely.
 
 \newpage
-\subsection*{Queue Length \& Queue Time}
+\subsection{Queue Length \& Queue Time}
 
-\subsubsection*{Expected Results}
+\subsubsection{Expected Results}
 Again using Little's Law, one can calculate the expected number in the queue $N_Q$.
 Note, although there are two separate FIFO queues, they both have the same expected queue length and time.
 \begin{align*}
@@ -213,10 +215,11 @@ N_Q = \frac{\rho^2}{1-\rho}
 \end{table}
 
 The expected queue time was detailed in the Expected Results for the System Delay
-\subsubsection*{Simulation Results}
+\subsubsection{Simulation Results}
 As shown in Tables 2 \& 3, the average queue lengths and queue times increased relative to the system delay.  
 Case \#1 had a low number of packets in the queue because its arrival rate $\lambda_1 = 0.5 \cdot \mu$.
 
+\vspace{.25cm}
 \begin{minipage}{0.5\textwidth}
 	\centering
 	\begin{tabular}{|c|c|c|c|} \hline
@@ -245,6 +248,7 @@ Case \#1 had a low number of packets in the queue because its arrival rate $\lam
 	\captionof{table}{Queue Time}
 	\label{qTime}
 \end{minipage}
+\vspace{.25cm}
 
 These results matched the expected results fairly well.
 For Case 1, there was a mean queue length of 1.49, compared to an expected queue length of 0.5, so a 1 packet difference.
@@ -256,7 +260,7 @@ For Case 1, there was an average \textbf{total} queue time of 0.97 seconds, comp
 Case 2 had an average total queue time of 23.42 seconds, compared to the expected queue time of 24.00 seconds.
 Finally, Case 3 had an average total queue time of 135.44 seconds.
 
-\subsection*{Propagation Delay}
+\subsection{Propagation Delay}
 One can see the propagation delay of the simulation by comparing the average lifetime to the sum of the queue times and service times.
 \begin{align*}
 \text{Prop Delay} = \text{Mean lifetime} - time_{fifo1} - time_{fifo2} - 2 \cdot \text{service time}
@@ -277,7 +281,7 @@ In practice, the mean times produced the following calculated propagation delays
 \end{table}
 
 
-\section*{Conclusions}
+\section{Conclusions}
 This project demonstrated the long term effects of a queuing system for different values of $\rho$.  
 When $\lambda$ is much less than $\mu$, the system is able to keep up, and produces minimal delays.  
 As $\lambda$ approaches $\mu$, the queue will increase in length; however, as long as $\lambda < \mu$, the system will still be stable.
