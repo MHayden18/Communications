@@ -13,16 +13,48 @@ namespace fifo {
 
 Define_Module(Fifo);
 
-simtime_t Fifo::startService(cMessage *msg)
+simtime_t Fifo::startService(Netmsg *msg)
 {
     EV << "Starting service of " << msg->getName() << endl;
     return par("serviceTime");
 }
 
-void Fifo::endService(cMessage *msg)
+void Fifo::endService(Netmsg *msg)
 {
     EV << "Completed service of " << msg->getName() << endl;
-    send(msg, "out");
+
+    int dest = msg->getDestination();
+    // At destination:
+    if (getIndex() == dest) {
+        send(msg, "sink");
+    }
+    // At A:
+    else if (getIndex() == 0) {
+        if (dest == 1 || dest == 3)
+            send(msg, "out", 0);
+        else {
+            send(msg, "out", 1);
+        }
+    }
+    // At B:
+    else if (getIndex() == 1) {
+        if (dest == 3) {
+            send(msg, "out", 0);
+        }
+        else {
+            send(msg, "out", 1);
+        }
+    }
+    // At C:
+    else if (getIndex() == 2) {
+        if (dest == 4) {
+            send(msg, "out", 0);
+        }
+        else {
+            send(msg, "out", 1);
+        }
+    }
+    // Otherwise we're at our destination, so send out to sinks
 }
 
 }; //namespace

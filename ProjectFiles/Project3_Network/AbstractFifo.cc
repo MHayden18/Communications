@@ -8,6 +8,7 @@
 //
 
 #include "AbstractFifo.h"
+#include "netmsg_m.h"
 
 namespace fifo {
 
@@ -24,7 +25,7 @@ AbstractFifo::~AbstractFifo()
 
 void AbstractFifo::initialize()
 {
-    endServiceMsg = new cMessage("end-service");
+    endServiceMsg = new Netmsg("end-service");
     queue.setName("queue");
 
     qlenSignal = registerSignal("qlen");
@@ -34,7 +35,7 @@ void AbstractFifo::initialize()
     emit(busySignal, false);
 }
 
-void AbstractFifo::handleMessage(cMessage *msg)
+void AbstractFifo::handleMessage(Netmsg *msg)
 {
     if (msg == endServiceMsg) {
         endService(msgServiced);
@@ -43,7 +44,7 @@ void AbstractFifo::handleMessage(cMessage *msg)
             emit(busySignal, false);
         }
         else {
-            msgServiced = (cMessage *)queue.pop();
+            msgServiced = (Netmsg *)queue.pop();
             emit(qlenSignal, queue.getLength());
             emit(queueingTimeSignal, simTime() - msgServiced->getTimestamp());
             simtime_t serviceTime = startService(msgServiced);

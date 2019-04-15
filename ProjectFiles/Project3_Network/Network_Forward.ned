@@ -18,48 +18,28 @@ network Network_Forward
             parameters:
                 @display("p=45,136");
         }
-        A: Fifo {
-            parameters:
-                @display("p=120,136");
-        }
-        fifoB: Fifo {
-            parameters:
-                @display("p=218,78");
-        }
-        fifoC: Fifo {
-            parameters:
-                @display("p=218,192");
-        }
-        fifoD: Fifo {
-            parameters:
-                @display("p=321,49");
-        }
-        fifoE: Fifo {
-            parameters:
-                @display("p=321,136");
-        }
-        fifoF: Fifo {
-            parameters:
-                @display("p=321,218");
+        fifo[6]: Fifo {
+            @display("p=239,136,r,10");
         }
         sink[5]: Sink {
-            parameters:
-                @display("p=508,136");
+            @display("p=427,136,c");
         }
+    // fifo[1]-fifo[5] correspond to fifoB --> fifoF
     connections:
-        gen.out --> A.in++;
-        A.out++ --> fifoB.in++;
-        A.out++ --> fifoC.in++;
-        fifoB.out++ --> fifoD.in++;
-        fifoB.out++ --> fifoE.in++;
-        fifoC.out++ --> fifoE.in++;
-        fifoC.out++ --> fifoF.in++;
+        gen.out --> fifo[0].in++;
+        fifo[0].out++ --> {  delay = 60 ms; } --> fifo[1].in++;
+        fifo[0].out++ --> {  delay = 50 ms; } --> fifo[2].in++;
+        fifo[1].out++ --> {  delay = 40 ms; } --> fifo[3].in++;
+        fifo[1].out++ --> {  delay = 30 ms; } --> fifo[4].in++;
+        fifo[2].out++ --> {  delay = 20 ms; } --> fifo[4].in++;
+        fifo[2].out++ --> {  delay = 10 ms; } --> fifo[5].in++;
 
-        fifoB.out++ --> sink[0].in;
-        fifoC.out++ --> sink[1].in;
-        fifoD.out++ --> sink[2].in;
-        fifoE.out++ --> sink[3].in;
-        fifoF.out++ --> sink[4].in;
+		// Output gates to sinks:
+        fifo[1].sink --> sink[0].in;
+        fifo[2].sink --> sink[1].in;
+        fifo[3].sink --> sink[2].in;
+        fifo[4].sink --> sink[3].in;
+        fifo[5].sink --> sink[4].in;
 
 }
 

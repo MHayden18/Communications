@@ -8,6 +8,7 @@
 //
 
 #include <omnetpp.h>
+#include "netmsg_m.h"
 
 using namespace omnetpp;
 
@@ -19,7 +20,7 @@ namespace fifo {
 class Source : public cSimpleModule
 {
   private:
-    cMessage *sendMessageEvent;
+    Netmsg *sendMessageEvent;
 
   public:
     Source();
@@ -27,7 +28,7 @@ class Source : public cSimpleModule
 
   protected:
     virtual void initialize() override;
-    virtual void handleMessage(cMessage *msg) override;
+    virtual void handleMessage(Netmsg *msg);
 };
 
 Define_Module(Source);
@@ -44,19 +45,47 @@ Source::~Source()
 
 void Source::initialize()
 {
-    sendMessageEvent = new cMessage("sendMessageEvent");
+    sendMessageEvent = new Netmsg("sendMessageEvent");
+    // Produce source and destination address using probabilities.
+    int probDest = intuniform(1, 100);
+    int dest;
+    if (probDest <= 10) {
+        // Destination = B
+        dest = 1;
+    }
+    else if (probDest <= 25) {
+        // Destination = C
+        dest = 2;
+    }
+    else if (probDest <= 50) {
+        // Destination = D
+        dest = 3;
+    }
+    else if (probDest <= 80) {
+        // Destination = E
+        dest = 4;
+    }
+    else {
+        // Destination = F
+        dest = 5;
+    }
+
+    // Create message object and set source and destination field.
+    sendMessageEvent->setDestination(dest);
     scheduleAt(simTime(), sendMessageEvent);
 }
 
-void Source::handleMessage(cMessage *msg)
+void Source::handleMessage(Netmsg *msg)
 {
     ASSERT(msg == sendMessageEvent);
 
-    cMessage *job = new cMessage("job");
-    send(job, "out");
+    Netmsg *job = new Netmsg("job");
+    job->setDestination( msg->getDestination() );
 
+    send(job, "out");
     scheduleAt(simTime()+par("sendIaTime").doubleValue(), sendMessageEvent);
 }
+
 
 }; //namespace
 

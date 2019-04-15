@@ -8,6 +8,7 @@
 //
 
 #include <omnetpp.h>
+#include "netmsg_m.h"
 
 using namespace omnetpp;
 
@@ -23,7 +24,7 @@ class Sink : public cSimpleModule
 
   protected:
     virtual void initialize() override;
-    virtual void handleMessage(cMessage *msg) override;
+    virtual void handleMessage(Netmsg *msg);
 };
 
 Define_Module(Sink);
@@ -33,7 +34,7 @@ void Sink::initialize()
     lifetimeSignal = registerSignal("lifetime");
 }
 
-void Sink::handleMessage(cMessage *msg)
+void Sink::handleMessage(Netmsg *msg)
 {
     simtime_t lifetime = simTime() - msg->getCreationTime();
     EV << "Received " << msg->getName() << ", lifetime: " << lifetime << "s" << endl;

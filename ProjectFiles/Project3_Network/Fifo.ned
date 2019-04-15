@@ -25,4 +25,5 @@ simple Fifo
     gates:
         input in[];
         output out[];
+        output sink;
 }
