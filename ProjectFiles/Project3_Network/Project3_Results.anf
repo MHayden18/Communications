@@ -7,8 +7,10 @@
   <datasets>
     <datasets name="SystemDelay"/>
     <datasets name="TrafficLoad">
-      <items xsi:type="scave:Add" filterPattern="module(*.sink[*]) "/>
-      <items xsi:type="scave:BarChart"/>
+      <items xsi:type="scave:Add" filterPattern="module(*.sink[*]) AND name(lifetime:mean) "/>
+      <items xsi:type="scave:BarChart" name="">
+        <groupByFields>experiment</groupByFields>
+      </items>
     </datasets>
   </datasets>
   <chartSheets>

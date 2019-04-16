@@ -22,10 +22,13 @@ simtime_t Fifo::startService(cMessage *msg)
 void Fifo::endService(cMessage *msg)
 {
     EV << "Completed service of " << msg->getName() << endl;
-    Netmsg *mymsg = check_and_cast<Netmsg *>(msg);
-    int dest = mymsg->getDestination();
+    int dest = check_and_cast<Netmsg *>(msg)->getDestination();
     // At destination:
     if (getIndex() == dest) {
+        send(msg, "sink");
+    }
+    // At E from C
+    else if (getIndex() == 4 && dest == 44 ) {
         send(msg, "sink");
     }
     // At A:
@@ -47,7 +50,7 @@ void Fifo::endService(cMessage *msg)
     }
     // At C:
     else if (getIndex() == 2) {
-        if (dest == 4) {
+        if (dest == 44) {
             send(msg, "out", 0);
         }
         else {
