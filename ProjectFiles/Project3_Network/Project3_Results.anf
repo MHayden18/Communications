@@ -5,15 +5,75 @@
     <inputs name="results/*.sca"/>
   </inputs>
   <datasets>
-    <datasets name="SystemDelay"/>
-    <datasets name="TrafficLoad">
-      <items xsi:type="scave:Add" filterPattern="module(*.sink[*]) AND name(lifetime:mean) "/>
-      <items xsi:type="scave:BarChart" name="">
-        <groupByFields>experiment</groupByFields>
+    <datasets name="SystemDelay">
+      <items xsi:type="scave:Add" filterPattern="name(lifetime:vector) " type="VECTOR"/>
+      <items xsi:type="scave:Apply" operation="merger">
+        <filters xsi:type="scave:Select" filterPattern="run(NetworkA*) " type="VECTOR"/>
+      </items>
+      <items xsi:type="scave:Apply" operation="merger">
+        <filters xsi:type="scave:Select" filterPattern="run(NetworkB*) " type="VECTOR"/>
+      </items>
+      <items xsi:type="scave:Apply" operation="mean"/>
+      <items xsi:type="scave:LineChart" name="AverageLifetime" lineNameFormat="">
+        <properties name="Graph.Title" value=" "/>
+        <properties name="X.Axis.Title" value="Simulation Time (s)"/>
+        <properties name="Y.Axis.Title" value="Mean System Delay (s)"/>
+        <properties name="Legend.Display" value="true"/>
+        <properties name="Legend.Position" value="Inside"/>
+        <properties name="Legend.Anchoring" value="NorthWest"/>
+        <properties name="X.Axis.Min" value="0.0"/>
+        <properties name="X.Axis.Max" value="3500.0"/>
+        <properties name="Line.Name/NetworkA-0-20190416-08:56:33-8688 mean(merger(lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector)) NetworkA" value="Arrival Rate = 15 pps"/>
+        <properties name="Line.Name/NetworkB-0-20190416-09:04:21-8688 mean(merger(lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;...)) NetworkB" value="Arrival Rate = 17 pps"/>
+      </items>
+    </datasets>
+    <datasets name="NodeDelay">
+      <items xsi:type="scave:Group" name="NetA">
+        <items xsi:type="scave:Add" filterPattern="name(lifetime:vector) AND run(NetworkA*)" type="VECTOR"/>
+        <items xsi:type="scave:Apply" operation="merger">
+          <groupBy>module</groupBy>
+        </items>
+        <items xsi:type="scave:Apply" operation="mean"/>
+        <items xsi:type="scave:LineChart" name="NodeDelayA" lineNameFormat="">
+          <properties name="Legend.Display" value="true"/>
+          <properties name="Legend.Position" value="Inside"/>
+          <properties name="Legend.Anchoring" value="NorthWest"/>
+          <properties name="X.Axis.Max" value="3500.0"/>
+          <properties name="Line.Name/Network_Forward.sink[1] mean(merger(lifetime:vector;lifetime:vector;lifetime:vector))" value="Node B"/>
+          <properties name="Line.Name/Network_Forward.sink[2] mean(merger(lifetime:vector))" value="Node C"/>
+          <properties name="Line.Name/Network_Forward.sink[3] mean(merger(lifetime:vector))" value="Node D"/>
+          <properties name="Line.Name/Network_Forward.sink[4] mean(merger(lifetime:vector))" value="Node E"/>
+          <properties name="Line.Name/Network_Forward.sink[5] mean(merger(lifetime:vector))" value="Node F"/>
+          <properties name="Line.Color/Network_Forward.sink[1] mean(merger(lifetime:vector;lifetime:vector;lifetime:vector))" value="#80FFFF"/>
+        </items>
+      </items>
+      <items xsi:type="scave:Group" name="NetB">
+        <items xsi:type="scave:Add" filterPattern="name(lifetime:vector) AND run(NetworkB*)" type="VECTOR"/>
+        <items xsi:type="scave:Apply" operation="merger">
+          <groupBy>module</groupBy>
+        </items>
+        <items xsi:type="scave:Apply" operation="mean"/>
+        <items xsi:type="scave:LineChart" name="NodeDelayB" lineNameFormat="">
+          <properties name="Legend.Display" value="true"/>
+          <properties name="Legend.Position" value="Inside"/>
+          <properties name="Legend.Anchoring" value="NorthWest"/>
+          <properties name="X.Axis.Max" value="3500.0"/>
+          <properties name="Line.Name/Network_Forward.sink[1] mean(merger(lifetime:vector;lifetime:vector;lifetime:vector))" value="Node B"/>
+          <properties name="Line.Name/Network_Forward.sink[2] mean(merger(lifetime:vector))" value="Node C"/>
+          <properties name="Line.Name/Network_Forward.sink[3] mean(merger(lifetime:vector))" value="Node D"/>
+          <properties name="Line.Name/Network_Forward.sink[4] mean(merger(lifetime:vector))" value="Node E"/>
+          <properties name="Line.Name/Network_Forward.sink[5] mean(merger(lifetime:vector))" value="Node F"/>
+          <properties name="Line.Name/Network_Forward.sink[1]" value="Node B"/>
+          <properties name="Line.Name/Network_Forward.sink[2]" value="Node C"/>
+          <properties name="Line.Name/Network_Forward.sink[3]" value="Node D"/>
+          <properties name="Line.Name/Network_Forward.sink[4]" value="Node E"/>
+          <properties name="Line.Name/Network_Forward.sink[5]" value="Node F"/>
+          <properties name="Line.Color/Network_Forward.sink[1]" value="#80FFFF"/>
+        </items>
       </items>
     </datasets>
   </datasets>
   <chartSheets>
-    <chartSheets name="default" charts="//@datasets/@datasets.1/@items.1"/>
+    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.4 //@datasets/@datasets.1/@items.0/@items.3 //@datasets/@datasets.1/@items.1/@items.3"/>
   </chartSheets>
 </scave:Analysis>
