@@ -25,7 +25,7 @@ AbstractFifo::~AbstractFifo()
 
 void AbstractFifo::initialize()
 {
-    endServiceMsg = new Netmsg("end-service");
+    endServiceMsg = new cMessage("end-service");
     queue.setName("queue");
 
     qlenSignal = registerSignal("qlen");
@@ -35,7 +35,7 @@ void AbstractFifo::initialize()
     emit(busySignal, false);
 }
 
-void AbstractFifo::handleMessage(Netmsg *msg)
+void AbstractFifo::handleMessage(cMessage *msg)
 {
     if (msg == endServiceMsg) {
         endService(msgServiced);
@@ -44,7 +44,7 @@ void AbstractFifo::handleMessage(Netmsg *msg)
             emit(busySignal, false);
         }
         else {
-            msgServiced = (Netmsg *)queue.pop();
+            msgServiced = (cMessage *)queue.pop();
             emit(qlenSignal, queue.getLength());
             emit(queueingTimeSignal, simTime() - msgServiced->getTimestamp());
             simtime_t serviceTime = startService(msgServiced);

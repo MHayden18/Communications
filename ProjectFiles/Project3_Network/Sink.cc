@@ -24,7 +24,7 @@ class Sink : public cSimpleModule
 
   protected:
     virtual void initialize() override;
-    virtual void handleMessage(Netmsg *msg);
+    virtual void handleMessage(cMessage *msg);
 };
 
 Define_Module(Sink);
@@ -34,7 +34,7 @@ void Sink::initialize()
     lifetimeSignal = registerSignal("lifetime");
 }
 
-void Sink::handleMessage(Netmsg *msg)
+void Sink::handleMessage(cMessage *msg)
 {
     simtime_t lifetime = simTime() - msg->getCreationTime();
     EV << "Received " << msg->getName() << ", lifetime: " << lifetime << "s" << endl;

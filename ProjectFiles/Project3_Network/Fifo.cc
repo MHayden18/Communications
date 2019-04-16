@@ -13,24 +13,24 @@ namespace fifo {
 
 Define_Module(Fifo);
 
-simtime_t Fifo::startService(Netmsg *msg)
+simtime_t Fifo::startService(cMessage *msg)
 {
     EV << "Starting service of " << msg->getName() << endl;
     return par("serviceTime");
 }
 
-void Fifo::endService(Netmsg *msg)
+void Fifo::endService(cMessage *msg)
 {
     EV << "Completed service of " << msg->getName() << endl;
-
-    int dest = msg->getDestination();
+    Netmsg *mymsg = check_and_cast<Netmsg *>(msg);
+    int dest = mymsg->getDestination();
     // At destination:
     if (getIndex() == dest) {
         send(msg, "sink");
     }
     // At A:
     else if (getIndex() == 0) {
-        if (dest == 1 || dest == 3)
+        if (dest == 1 || dest == 3 || dest == 4)
             send(msg, "out", 0);
         else {
             send(msg, "out", 1);
@@ -54,7 +54,6 @@ void Fifo::endService(Netmsg *msg)
             send(msg, "out", 1);
         }
     }
-    // Otherwise we're at our destination, so send out to sinks
 }
 
 }; //namespace

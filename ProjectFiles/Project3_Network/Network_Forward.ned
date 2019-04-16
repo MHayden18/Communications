@@ -12,16 +12,16 @@
 //
 network Network_Forward
 {
-    @display("bgb=564,254");
+    @display("bgb=564,468");
     submodules:
         gen: Source {
             parameters:
                 @display("p=45,136");
         }
         fifo[6]: Fifo {
-            @display("p=239,136,r,10");
+            @display("p=239,136,c");
         }
-        sink[5]: Sink {
+        sink[6]: Sink {
             @display("p=427,136,c");
         }
     // fifo[1]-fifo[5] correspond to fifoB --> fifoF
@@ -34,12 +34,13 @@ network Network_Forward
         fifo[2].out++ --> {  delay = 20 ms; } --> fifo[4].in++;
         fifo[2].out++ --> {  delay = 10 ms; } --> fifo[5].in++;
 
-		// Output gates to sinks:
-        fifo[1].sink --> sink[0].in;
-        fifo[2].sink --> sink[1].in;
-        fifo[3].sink --> sink[2].in;
-        fifo[4].sink --> sink[3].in;
-        fifo[5].sink --> sink[4].in;
+        // Output gates to sinks:
+        fifo[0].sink --> sink[0].in;
+        fifo[1].sink --> sink[1].in;
+        fifo[2].sink --> sink[2].in;
+        fifo[3].sink --> sink[3].in;
+        fifo[4].sink --> sink[4].in;
+        fifo[5].sink --> sink[5].in;
 
 }
 

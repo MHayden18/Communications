@@ -20,7 +20,7 @@ namespace fifo {
 class Source : public cSimpleModule
 {
   private:
-    Netmsg *sendMessageEvent;
+    cMessage *sendMessageEvent;
 
   public:
     Source();
@@ -28,7 +28,7 @@ class Source : public cSimpleModule
 
   protected:
     virtual void initialize() override;
-    virtual void handleMessage(Netmsg *msg);
+    virtual void handleMessage(cMessage *msg);
 };
 
 Define_Module(Source);
@@ -45,7 +45,16 @@ Source::~Source()
 
 void Source::initialize()
 {
-    sendMessageEvent = new Netmsg("sendMessageEvent");
+    sendMessageEvent = new cMessage("sendMessageEvent");
+    scheduleAt(simTime(), sendMessageEvent);
+
+}
+
+void Source::handleMessage(cMessage *msg)
+{
+    ASSERT(msg == sendMessageEvent);
+
+    Netmsg *job = new Netmsg("job");
     // Produce source and destination address using probabilities.
     int probDest = intuniform(1, 100);
     int dest;
@@ -61,28 +70,21 @@ void Source::initialize()
         // Destination = D
         dest = 3;
     }
-    else if (probDest <= 80) {
-        // Destination = E
+    else if (probDest <= 65) {
+        // Destination = E --> Send through B
         dest = 4;
+    }
+    else if (probDest <= 80) {
+        // Destination = E --> Send through C
+        dest = 44;
     }
     else {
         // Destination = F
         dest = 5;
     }
-
-    // Create message object and set source and destination field.
-    sendMessageEvent->setDestination(dest);
-    scheduleAt(simTime(), sendMessageEvent);
-}
-
-void Source::handleMessage(Netmsg *msg)
-{
-    ASSERT(msg == sendMessageEvent);
-
-    Netmsg *job = new Netmsg("job");
-    job->setDestination( msg->getDestination() );
-
+    job->setDestination( dest );
     send(job, "out");
+
     scheduleAt(simTime()+par("sendIaTime").doubleValue(), sendMessageEvent);
 }
 

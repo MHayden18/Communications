@@ -25,8 +25,8 @@ namespace fifo {
 class AbstractFifo : public cSimpleModule
 {
   protected:
-    Netmsg *msgServiced;
-    Netmsg *endServiceMsg;
+    cMessage *msgServiced;
+    cMessage *endServiceMsg;
     cQueue queue;
     simsignal_t qlenSignal;
     simsignal_t busySignal;
@@ -38,12 +38,12 @@ class AbstractFifo : public cSimpleModule
 
   protected:
     virtual void initialize() override;
-    virtual void handleMessage(Netmsg *msg);
+    virtual void handleMessage(cMessage *msg) override;
 
     // hook functions to (re)define behaviour
-    virtual void arrival(Netmsg *msg) {}
-    virtual simtime_t startService(Netmsg *msg) = 0;
-    virtual void endService(Netmsg *msg) = 0;
+    virtual void arrival(cMessage *msg) {}
+    virtual simtime_t startService(cMessage *msg) = 0;
+    virtual void endService(cMessage *msg) = 0;
 };
 
 }; //namespace
