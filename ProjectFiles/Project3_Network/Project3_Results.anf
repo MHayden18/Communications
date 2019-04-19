@@ -7,6 +7,7 @@
   <datasets>
     <datasets name="SystemDelay">
       <items xsi:type="scave:Add" filterPattern="name(lifetime:vector) " type="VECTOR"/>
+      <items xsi:type="scave:Discard" filterPattern="run(UnevenDist*) " type="VECTOR"/>
       <items xsi:type="scave:Apply" operation="merger">
         <filters xsi:type="scave:Select" filterPattern="run(NetworkA*) " type="VECTOR"/>
       </items>
@@ -22,9 +23,15 @@
         <properties name="Legend.Position" value="Inside"/>
         <properties name="Legend.Anchoring" value="NorthWest"/>
         <properties name="X.Axis.Min" value="0.0"/>
-        <properties name="X.Axis.Max" value="3500.0"/>
+        <properties name="X.Axis.Max" value="36000.0"/>
         <properties name="Line.Name/NetworkA-0-20190416-08:56:33-8688 mean(merger(lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector)) NetworkA" value="Arrival Rate = 15 pps"/>
-        <properties name="Line.Name/NetworkB-0-20190416-09:04:21-8688 mean(merger(lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;...)) NetworkB" value="Arrival Rate = 17 pps"/>
+        <properties name="Line.Name/NetworkB-0-20190416-09:04:21-8688 mean(merger(lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;...)) NetworkB" value="Distribution 15/15"/>
+        <properties name="Line.Name/NetworkA-0-20190416-08:56:33-8688 NetworkA" value="Arrival Rate = 15 pps"/>
+        <properties name="Line.Name/NetworkB-0-20190416-09:04:21-8688 NetworkB" value="Arrival Rate = 17 pps"/>
+        <properties name="Line.Display/NetworkA-0-20190416-08:56:33-8688 mean(merger(lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;lifetime:vector;...)) NetworkA" value="false"/>
+        <properties name="Line.Name/UnevenDist-0-20190419-09:57:41-5716 mean(merger(lifetime:vector)) UnevenDist" value="Distribution - 14/16"/>
+        <properties name="Line.Name/UnevenDist2-0-20190419-10:07:35-14256 mean(merger(lifetime:vector)) UnevenDist2" value="Distribution - 10/20"/>
+        <properties name="Line.Display/NetworkA-0-20190416-08:56:33-8688 0 mean(merger(lifetime:vector)) NetworkA #0" value="false"/>
       </items>
     </datasets>
     <datasets name="NodeDelay">
@@ -74,6 +81,6 @@
     </datasets>
   </datasets>
   <chartSheets>
-    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.4 //@datasets/@datasets.1/@items.0/@items.3 //@datasets/@datasets.1/@items.1/@items.3"/>
+    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.5 //@datasets/@datasets.1/@items.0/@items.3 //@datasets/@datasets.1/@items.1/@items.3"/>
   </chartSheets>
 </scave:Analysis>

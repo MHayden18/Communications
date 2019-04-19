@@ -6,7 +6,7 @@
 \usepackage{bigstrut}
 \usepackage{enumerate}
 \usepackage{fancyhdr}
-\usepackage[top=.75in, bottom=.95in, left=.75in, right=.75in]{geometry}
+\usepackage[top=1.0in, bottom=1.5in, left=0.75in, right=0.75in]{geometry}
 \usepackage{float}
 \usepackage{lastpage}
 \usepackage{tikz}
@@ -59,16 +59,24 @@
 \fancyfoot{}
 \setlength{\headheight}{59.0pt}
 \def\inputGnumericTable{}
-\fancyhead[CO]{\textbf{Air Force Institute of Technology\\Department of Electrical and Computer Engineering\\
- Computer Communication Networks (CSCE-654) Project \#2\newline \newline Name: Micah Hayden}}
+\fancyhead[CO]{}
 \lhead{\today}
 \rhead{Page \thepage{} of \pageref{LastPage} }
 \newlength\tindent
 \setlength{\tindent}{\parindent}
 \setlength{\parindent}{0pt}
 \renewcommand{\indent}{\hspace*{\tindent}}
-\begin{document}
 
+\usepackage[toc,page]{appendix}
+\usepackage{titling}
+\setlength{\droptitle}{-2.5cm}
+
+\title{Air Force Institute of Technology \\ Department of Electrical and Computer Engineering}
+\author{CSCE 654 - Computer Communication Networks \\ Project \#3 - Network Routing \\ \\ Author:  Micah Hayden }
+\date{\today}
+
+\begin{document}
+\maketitle
 %\begin{abstract}
 %This is my abstract.
 %\end{abstract}
@@ -76,78 +84,552 @@
 \section{Introduction:}
 \label{sec:Intro}
 
+The goal of this project is to demonstrate the queuing impact of a routing network.
+The network consists of 6 nodes A-F. 
+All arrivals enter the system from the source into A at rate $\lambda$.
+From there, messages are routed to their appropriate destination according to the network topology shown in Figure \ref{fig:Topology}.
+The times shown along links between nodes A-F represent the propagation delays between nodes, while the percentages between a node and its sink represents the percentage of the total traffic, destined to the respective nodes. 
+Node A has a service rate $\mu_A = 10 pps$, while all other nodes have service rate $\mu_{\bar{A}} = 20 pps$.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.75]{Images/NetworkTopology.PNG}
+\caption{Network Topology of Routing Network}
+\label{fig:Topology}
+\end{figure}
+
+The key performance parameters for this experiment are the system delays - both per node, and the system as a whole; as well as the routing accuracy of the system.
+Case 1 has an arrival rate into A $\lambda_A = 15 \, pps$, and Case 2 has arrival rate $\lambda_A = 17 \, pps$.
+
+Mathematically analyzing the system prior to simulation allows prediction of the system response, as well as provides an anchor point for the results.
+If the results match the expectation, the system functioned as expected.
+However, if the results do not match, several questions arise:  was the simulation setup properly? Did the analysis not account for a particular parameter/factor?  
+Was the particular queuing model used appropriate?
 
 \section{Expected Results:}
 \label{sec:ExpectedResults}
+This section will go through the expected results of Case 1 \& Case 2.
+The data to be analyzed is the routing accuracy and system delay, both per node and for the system as a whole.
 
+The expected accuracy of the routing is simply the \% of packets routed to each destination.  Table \ref{tab:expTrafficLoad} below enumerates these expectations:
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c|} \hline
+\textbf{Node} & \textbf{\% of Traffic} \\ \hline
+A & 0 \\ \hline
+B & 10 \\ \hline
+C & 15 \\ \hline
+D & 25 \\ \hline
+E & 30 \\ \hline
+F & 20 \\ \hline
+Total & 100 \\ \hline
+\end{tabular}
+\caption{Expected traffic load per node}
+\label{tab:expTrafficLoad}
+\end{table}
+
+
+Traffic with destination $E$ will be routed evenly through nodes $B$ and $C$.
+This distributes the expected network traffic evenly across links $A \rightarrow B$ and $A \rightarrow C$, with each receiving $\frac{1}{2}$ of $E$'s traffic.\footnote{$Load_{link}$ is relative to the departure rate of the source node of the particular link.}
+
+\begin{minipage}{.5\textwidth}
+\begin{align*}
+Load_{A \rightarrow B} 	&= Load_B + Load_D + \frac{1}{2} \cdot Load_E \\
+						&= 0.10 + 0.25 + \frac{1}{2} \cdot 0.30 \\
+						&= 0.50
+\end{align*}
+\vspace{.25cm}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+\begin{align*}
+Load_{A \rightarrow C} 	&= Load_C + Load_F + \frac{1}{2} \cdot Load_E \\
+						&= 0.15 + 0.20 + \frac{1}{2} \cdot 0.30 \\
+						&= 0.50
+\end{align*}
+\vspace{.25cm}
+\end{minipage}
+
+This indicates that links $A \rightarrow B$ and $A \rightarrow C$ will each receive half of the traffic departing $A$.
+Because $\mu_A > \lambda_A$, the departure rate of $A$ equals $\lambda_A$.
+Thus, the arrival rate of nodes $B$ and $C$ equals $0.5 \cdot \lambda_A$.
+The departure rate from $B$ and $C$ must also equal their respective arrival rates because $\mu_B = \mu_C = 10 \, pps$, and $10 \, pps > 0.5 \cdot \lambda_A$ for both cases.
+
+Nodes $B$ and $C$ follow a similar pattern, but must also account for traffic routed to the sink (i.e. packets at $B$ with destination = $B$).
+Given the departure rate equals the arrival rate for any node, the following equation must hold:
+\begin{equation}
+\lambda_{dest} = \lambda_{source} \cdot \frac{\sum \text{load of all links from destination}}{\sum \text{load of all links from source}}
+\label{eq:arrivalRates}
+\end{equation}
+
+I utilized the above relationship to determine the actual arrival rates of each node for cases 1 and 2.\footnote{$\lambda_E$ is the sum of its arrival rates from $B$ and $C$.}
+\newline
+
+\begin{minipage}{0.5\textwidth}
+\centering
+\begin{tabular}{|c|c|} \hline
+\textbf{Node} & \textbf{Arrival Rate (pps)} \\ \hline
+A & 15.0 \\ \hline
+B & 7.5 \\ \hline
+C & 7.5 \\ \hline
+D & 3.75 \\ \hline
+E & 4.5 \\ \hline
+F & 3.0 \\ \hline
+\end{tabular}
+\captionof{table}{$\lambda_{expected}$ for Case 1}
+\label{tab:expArrival_case1}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\centering
+\begin{tabular}{|c|c|} \hline
+\textbf{Node} & \textbf{Arrival Rate (pps)} \\ \hline
+A & 17.0 \\ \hline
+B & 8.5 \\ \hline
+C & 8.5 \\ \hline
+D & 4.25 \\ \hline
+E & 5.1 \\ \hline
+F & 3.4 \\ \hline
+\end{tabular}
+\captionof{table}{$\lambda_{expected}$ for Case 2}
+\label{tab:expArrival_case2}
+\end{minipage}
+\newline
+
+With the arrival rates shown in Tables \ref{tab:expArrival_case1} and \ref{tab:expArrival_case2}, one can use Little's Law to calculate the expected time in the system, $E[r]$, for each node, using Equation \ref{eq:sysTime}.  
+\begin{equation}
+E[r] = \frac{1}{\mu - \lambda}
+\label{eq:sysTime}
+\end{equation}
+
+Tables \ref{tab:expSys1} and \ref{tab:expSys2} below show these times.
+\newline
+
+\begin{minipage}{0.5\textwidth}
+\centering
+\begin{tabular}{|c|c|} \hline
+\textbf{Node} & \textbf{$\mathbf{E[r]_{node}}$ (s)} \\ \hline
+A & 0.200 \\ \hline
+B & 0.400 \\ \hline
+C & 0.400 \\ \hline
+D & 0.160 \\ \hline
+E & 0.182 \\ \hline
+F & 0.143 \\ \hline
+\end{tabular}
+\captionof{table}{$E[r]$ for Case 1}
+\label{tab:expSys1}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\centering
+\begin{tabular}{|c|c|} \hline
+\textbf{Node} & \textbf{$\mathbf{E[r]_{node}}$ (s)} \\ \hline
+A & 0.333 \\ \hline
+B & 0.667 \\ \hline
+C & 0.667 \\ \hline
+D & 0.174 \\ \hline
+E & 0.204 \\ \hline
+F & 0.152 \\ \hline
+\end{tabular}
+\captionof{table}{$E[r]$ for Case 2}
+\label{tab:expSys2}
+\end{minipage}
+\newline
+
+The times shown above indicate the time in the system \textbf{at} a particular node.
+To find the expected system delay of a packet, one must also account for all previous nodes, as well as the propagation delays along its path.
+For Node E, one must account for the separate paths to reach $E$.
+Because half of its traffic goes through B and the other through C, this can be represented as the average system delay of 2 packets:  one going through B and the other through C.
+
+This produces the following expected end-to-end delay (source to destination), for packets routed to each node:
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c|c|} \hline
+\textbf{Node:} & \textbf{Case 1 Delay (s)} & \textbf{Case 2 Delay (s)} \\ \hline
+B & 0.660 & 1.060 \\ \hline
+C & 0.650 & 1.050 \\ \hline
+D & 0.860 & 1.274 \\ \hline
+E & 0.862 & 1.284 \\ \hline
+F & 0.803 & 1.212 \\ \hline
+\end{tabular}
+\caption{Expected end-to-end delay by destination}
+\label{tab:expEndDelay}
+\end{table}
+
+The overall network end-to-end delay is a weighted average of the values shown in Table \ref{tab:expEndDelay} with the expected Traffic Loads shown in Table \ref{tab:expTrafficLoad}.
+This yields the following:
+\newline
+
+\begin{minipage}{0.5\textwidth}
+\begin{align*}
+\text{End-to-End Delay}_{Case \, 1} = 0.798s
+\end{align*}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\begin{align*}
+\text{End-to-End Delay}_{Case \, 2} = 1.210s
+\end{align*}
+\end{minipage}
+\newline 
 
 \section{Simulation Setup:}
 \label{sec:SimSetup}
 
+The basis of the omnet simulation was still the FIFO queue sample used for Project 2.
+Each simulation run was 10 hours of sim-time.
 
 \subsection{Routing:}
-\label{subsec:Routing}
+\label{subsec:RoutingSetup}
+To accomplish the required routing, I utilized a custom message type \textbf{Netmsg}, which uses an integer to represent its destination.
 
+I assigned each destination node a unique integer. \footnote{To account for the duplicate paths to node E, there were two integers for E}.
+The source node generates a random integer between 1 and 100, inclusive.  Based on the random number, it assigns a corresponding destination node.
+As the number of messages grows, the distribution of destinations approaches the desired proportions.
+
+The other modifications required were to detect whether a packet had arrived at its destination; and if not, to send it out on the appropriate link.
+I modified the Fifo module's ``endService" function.
+Previously, when the queue finished processing a packet, it immediately sent it out on the sole port.
+The modifications change this to function to check if the packet's destination matches the queue's index.  
+If so, the queue sends the packet to the sink node.
+Otherwise, it uses simple logic to determine which of its outbound ports to send the message on.
+The code for both of these operations are shown in Appendix \ref{appendix:SimFiles}.
 
 \subsection{Network Configuration:}  
 \label{subsec:Config}
-
+I defined my network using an array of FIFO queues and sinks, as well as a single generator.
+The connections account for the propagation delay on each link.
+This topology matches that shown in Figure \ref{fig:Topology}.
 
 \section{Results \& Analysis:}
 \label{sec:Results}
-
+I conducted three simulations for each case, ensuring the results matched with different seeds and produced accurate results.
+I collected data to compare the lifetime of packets at each node, as well as the total lifetime of the system.
 
 \subsection{Routing Accuracy \& Traffic Load:}
-\label{subsec:Routing}
+\label{subsec:RoutingResults}
+To determine the routing accuracy and traffic load, I averaged the number of packets that arrived at each destination for each of the three simulation runs.  
+The traffic load was then calculated as a percentage of the number of total packets arriving to any destination for the respective case.
 
+As seen in Figures \ref{fig:loadA} and \ref{fig:loadB}, my results closely matched the expected traffic load.
+\newline
 
+\begin{minipage}{0.5\textwidth}
+\centering
+\includegraphics[scale=0.75]{Images/LoadA.PNG}
+\captionof{figure}{Traffic Load with $\lambda_A = 15 \, pps$}
+\label{fig:loadA}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\centering
+\includegraphics[scale=0.75]{Images/LoadB.PNG}
+\captionof{figure}{Traffic Load with $\lambda_A = 17 \, pps$}
+\label{fig:loadB}
+\end{minipage}
+\newline
+
+The raw data used to build Figures \ref{fig:loadA} and \ref{fig:loadB} is shown in Appendix \ref{appendix:Data}.
 \subsection{System Delay:}
 \label{subsec:SysDelay}
+I used the statistics collected at each sink node to compare the per-node average delay for each case.
+Both Case 1 and Case 2 performed well, with results closely matching the expectations.  
+As expected, the largest end-to-end delays were at Nodes D-F. 
+This occurs because to reach those nodes, they must go through two queue nodes, and two links before arriving at their destination's queue.
+The per-node end-to-end delays for Case 1 produced an average percent difference of $0.21\%$ from the expected delays, while Case 2 had an average percent difference of $0.893\%$.\footnote{This \% difference simply averaged the \% differences for each node, not based on the traffic load of each node.}
+Tables \ref{tab:nodeDelayA} and \ref{tab:nodeDelayB}, shown in Appendix \ref{appendix:Data}, show the per-node delays.
 
+I calculated the average end-to-end delay for Cases 1 and 2 by using a weighted average of system delays for destinations B-F.
+This weighted average used the observed traffic loads, as discussed in Section \ref{subsec:RoutingResults}, as the weights; and the system delays reported by each sink as the data, shown in Tables \ref{tab:nodeDelayA} and \ref{tab:nodeDelayB}.
 
+The average end-to-end delay for Case 1 was 0.7997 seconds, a $0.26 \%$ difference than the expected result.
+The average end-to-end delay for Case 2 was 1.996 seconds, a $0.822 \%$ difference than the expected result.
 
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.5]{Images/MeanSysDelay.PNG}
+\caption{Mean System Delay}
+\label{fig:meanSysDelay}
+\end{figure}
+
+Figure \ref{fig:meanSysDelay} ends at $t=3500$ seconds, although the simulation ran to 36,000 seconds.  
+This decision was made to better show how the end-to-end delay stabilized as time increased.
+
+\subsection{Routing Decisions}
+For my initial simulations, I used the assumption that splitting the traffic evenly between nodes B and C would produce the best overall system delay.
+This assumption was used to calculate all expected results, and routed traffic to destination E evenly through B and C.
+After seeing my results, I decided to run another round of simulations, routing a larger portion of the traffic through C, to see if the lower propagation delays experienced on that route would produce a correspondingly lower overall system delay.
+Essentially, will the corresponding decrease in propagation time make up for the increase in queue time experienced on the route?
+By routing more traffic through C, the traffic load at C would increase, causing increased queuing time for destinations C, E (through C), and F.  
+However, it would also decrease the queue time experienced at destinations B, D, and E (through B) which have a higher total propagation time.
+
+I ran two additional simulations, each with three trials.
+Both simulations used an arrival rate of $\lambda_A = 17 \, pps$.
+The first simulation used a small difference in the route selection to destination E:  routing 46.7\% of E's traffic through B, and sending the remaining 53.3\% through C. 
+The second simulation used a much larger difference:  sending 33.3\% through B, and sending 66.7\% through C.
+Figure \ref{fig:unevenDelay} shows the results of these trials, compared to the simulation with an even distribution.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.5]{Images/UnevenDist.PNG}
+\caption{Network Delay with Uneven Routing to Destination E}
+\label{fig:unevenDelay}
+\end{figure}
+
+The network delay of the original setup - with even routing had an average network delay of 1.1996 seconds.
+The overall network delay for the small difference had an average network delay of 1.211 seconds, while the large difference had an average delay of 1.566 seconds.
+
+Based on these results, I am confident that the optimal distribution is to evenly distribute the traffic between B and C.
+Any gains because of a reduced propagation delay are negated by the corresponding increase in queue time.
 
 \section{Conclusions:}
 \label{sec:Conclusions}
 
-This project demonstrated the long term effects of a queuing system for different values of $\rho$.  
-When $\lambda$ is much less than $\mu$, the system is able to keep up, and produces minimal delays.  
-As $\lambda$ approaches $\mu$, the queue will increase in length; however, as long as $\lambda < \mu$, the system will still be stable.
-Once $\lambda = \mu$, the system becomes unstable, and will have a system delay and queue length that will grow indefinitely.
-
-Another interesting outcome of this experiment was seeing the effects of the propagation delay.  
-One would expect the two queues to have identical times in the long run; however, they were slightly different for all simulations.
-Because of these variations, using the average queue times and average lifetime to calculate the propagation delay produced a slightly different value than the constant specified in the simulation, as shown in Table \#\ref{tab:calcPropDelay}.
-This shows the inherent complexity of a system of queues, even when the queues have the same parameters for expected arrival rates and service rates.
 
 
 \newpage
-\section*{Appendix A:  Figures}
-\label{sec:Figures}
+\begin{appendices}
+\section{Raw Data}
+\label{appendix:Data}
 
+\subsection*{Traffic Load}
+\begin{minipage}{0.5\textwidth}
+\centering
+\begin{tabular}{|c|c|c|} \hline
+\textbf{Node} & \textbf{Average Count} & \textbf{Percentage} \\ \hline
+B & 54154 & 10.03 \\ \hline
+C & 80705 & 14.95 \\ \hline
+D & 134853 & 24.99 \\ \hline
+E & 162120 & 30.04 \\ \hline
+F & 107871 & 19.99 \\ \hline
+\end{tabular}
+\captionof{table}{Traffic Load for Case 1}
+\label{tab:appTrafficA}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\centering
+\begin{tabular}{|c|c|c|} \hline
+\textbf{Node} & \textbf{Average Count} & \textbf{Percentage} \\ \hline
+B & 61412 & 10.04 \\ \hline
+C & 91600 & 14.98 \\ \hline
+D & 152887 & 25.00 \\ \hline
+E & 183458 & 29.99 \\ \hline
+F & 122293 & 19.99 \\ \hline
+\end{tabular}
+\captionof{table}{Traffic Load for Case 2}
+\label{tab:appTrafficB}
+\end{minipage}
 
+\subsection*{Per Node End-to-End Delay}
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c|c|c|} \hline
+\textbf{Node} & \textbf{Average Delay (s)} & \textbf{Expected Delay (s)} & \textbf{\% Difference} \\ \hline
+B & 0.660 & 0.660 & 0.007 \\ \hline
+C & 0.651 & 0.650 & 0.144 \\ \hline
+D & 0.861 & 0.860 & 0.105 \\ \hline
+E & 0.865 & 0.862 & 0.383 \\ \hline
+F & 0.806 & 0.803 & 0.410 \\ \hline
+\textbf{Network:} & \textbf{0.800} & \textbf{0.798} & \textbf{0.258} \\ \hline
+\end{tabular}
+\caption{End-to-End Delays for Case 1}
+\label{tab:nodeDelayA}
+\end{table}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c|c|c|} \hline
+\textbf{Node} & \textbf{Average Delay (s)} & \textbf{Expected Delay (s)} & \textbf{\% Difference} \\ \hline
+B & 1.042 & 1.060 & 1.690 \\ \hline
+C & 1.045 & 1.050 & 0.502 \\ \hline
+D & 1.257 & 1.274 & 1.292 \\ \hline
+E & 1.277 & 1.284 & 0.585 \\ \hline
+F & 1.207 & 1.212 & 0.397 \\ \hline
+\textbf{Network:} & \textbf{1.120} & \textbf{1.210} & \textbf{0.822} \\ \hline
+\end{tabular}
+\caption{End-to-End Delays for Case 2}
+\label{tab:nodeDelayB}
+\end{table}
 
 \newpage
-\clearpage
-\section*{Appendix B:  Simulation Files}
-\label{sec:SimFiles}
+\section{Simulation Files}
+\label{appendix:SimFiles}
 
 \begin{figure}[h!]
 \begin{lstlisting}
+[General]
+network = Network_Forward
+sim-time-limit = 10h
+cpu-time-limit = 300s
+#debug-on-errors = true
+#record-eventlog = true
 
+[Config NetworkA]
+description = "Arrival rate of 15 pps"
+repeat = 3
+**.gen.sendIaTime = 	 exponential(0.06667s)
+**.fifo[0].serviceTime = exponential(0.05s)
+**.fifo[1].serviceTime = exponential(0.1s)
+**.fifo[2].serviceTime = exponential(0.1s)
+**.fifo[3].serviceTime = exponential(0.1s)
+**.fifo[4].serviceTime = exponential(0.1s)
+**.fifo[5].serviceTime = exponential(0.1s)
+
+[Config NetworkB]
+description = "Arrival rate of 17 pps"
+repeat = 3
+**.gen.sendIaTime = 	 exponential(0.05882s)
+**.fifo[0].serviceTime = exponential(0.05s)
+**.fifo[1].serviceTime = exponential(0.1s)
+**.fifo[2].serviceTime = exponential(0.1s)
+**.fifo[3].serviceTime = exponential(0.1s)
+**.fifo[4].serviceTime = exponential(0.1s)
+**.fifo[5].serviceTime = exponential(0.1s)
 \end{lstlisting}
 \vspace{-1cm}
 \caption*{Simulation Initialization File - omnetpp.ini}
 \end{figure}
 
-
-\newpage
 \begin{figure}[h!]
 \begin{lstlisting}
+network Network_Forward
+{
+    @display("bgb=564,468");
+    submodules:
+        gen: Source {
+            parameters:
+                @display("p=45,136");
+        }
+        fifo[6]: Fifo {
+            @display("p=239,136,c");
+        }
+        sink[6]: Sink {
+            @display("p=427,136,c");
+        }
+    // fifo[1]-fifo[5] correspond to fifoB --> fifoF
+    connections:
+        gen.out --> fifo[0].in++;
+        fifo[0].out++ --> {  delay = 60 ms; } --> fifo[1].in++;
+        fifo[0].out++ --> {  delay = 50 ms; } --> fifo[2].in++;
+        fifo[1].out++ --> {  delay = 40 ms; } --> fifo[3].in++;
+        fifo[1].out++ --> {  delay = 30 ms; } --> fifo[4].in++;
+        fifo[2].out++ --> {  delay = 20 ms; } --> fifo[4].in++;
+        fifo[2].out++ --> {  delay = 10 ms; } --> fifo[5].in++;
 
+        // Output gates to sinks:
+        fifo[0].sink --> sink[0].in;
+        fifo[1].sink --> sink[1].in;
+        fifo[2].sink --> sink[2].in;
+        fifo[3].sink --> sink[3].in;
+        fifo[4].sink --> sink[4].in;
+        fifo[5].sink --> sink[5].in;
+
+}
 \end{lstlisting}
 \vspace{-1cm}
-\caption*{NED FILE}
+\caption*{Network Description (NED) File}
 \end{figure}
+
+\begin{figure}[h!]
+\begin{lstlisting}
+void Fifo::endService(cMessage *msg)
+{
+    EV << "Completed service of " << msg->getName() << endl;
+    int dest = check_and_cast<Netmsg *>(msg)->getDestination();
+    // At destination:
+    if (getIndex() == dest) {
+        send(msg, "sink");
+    }
+    // At E from C
+    else if (getIndex() == 4 && dest == 44 ) {
+        send(msg, "sink");
+    }
+    // At A:
+    else if (getIndex() == 0) {
+        if (dest == 1 || dest == 3 || dest == 4)
+            send(msg, "out", 0);
+        else {
+            send(msg, "out", 1);
+        }
+    }
+    // At B:
+    else if (getIndex() == 1) {
+        if (dest == 3) {
+            send(msg, "out", 0);
+        }
+        else {
+            send(msg, "out", 1);
+        }
+    }
+    // At C:
+    else if (getIndex() == 2) {
+        if (dest == 44) {
+            send(msg, "out", 0);
+        }
+        else {
+            send(msg, "out", 1);
+        }
+    }
+}
+\end{lstlisting}
+\vspace{-1cm}
+\caption*{FIFO endService Function}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{lstlisting}
+void Source::handleMessage(cMessage *msg)
+{
+    ASSERT(msg == sendMessageEvent);
+
+    Netmsg *job = new Netmsg("job");
+    // Produce source and destination address using probabilities.
+    int probDest = intuniform(1, 100);
+    int dest;
+    if (probDest <= 10) {
+        // Destination = B
+        dest = 1;
+    }
+    else if (probDest <= 25) {
+        // Destination = C
+        dest = 2;
+    }
+    else if (probDest <= 50) {
+        // Destination = D
+        dest = 3;
+    }
+    else if (probDest <= 65) { //--> Using below probability to test uneven distribution through B/C
+    //else if (probDest <= 60) {
+        // Destination = E --> Send through B
+        dest = 4;
+    }
+    else if (probDest <= 80) {
+        // Destination = E --> Send through C
+        dest = 44;
+    }
+    else {
+        // Destination = F
+        dest = 5;
+    }
+    job->setDestination( dest );
+    send(job, "out");
+
+    scheduleAt(simTime()+par("sendIaTime").doubleValue(), sendMessageEvent);
+}
+\end{lstlisting}
+\vspace{-1cm}
+\caption*{Source Node - destination logic}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{lstlisting}
+namespace fifo;
+
+message Netmsg {
+    int destination;
+}
+\end{lstlisting}
+\vspace{-1cm}
+\caption*{Netmsg Type}
+\end{figure}
+
+\end{appendices}
 
 \end{document}

@@ -70,7 +70,8 @@ void Source::handleMessage(cMessage *msg)
         // Destination = D
         dest = 3;
     }
-    else if (probDest <= 65) {
+    else if (probDest <= 65) { //--> Using below probability to test uneven distribution through B/C
+    //else if (probDest <= 60) {
         // Destination = E --> Send through B
         dest = 4;
     }
