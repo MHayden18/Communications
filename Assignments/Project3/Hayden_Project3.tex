@@ -1,0 +1,153 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{alltt}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{bigstrut}
+\usepackage{enumerate}
+\usepackage{fancyhdr}
+\usepackage[top=.75in, bottom=.95in, left=.75in, right=.75in]{geometry}
+\usepackage{float}
+\usepackage{lastpage}
+\usepackage{tikz}
+\usepackage[latin1]{inputenc}
+\usepackage{color}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{calc}
+\usepackage{multirow}
+\usepackage{hhline}
+\usepackage{ifthen}
+\usepackage{listings}
+\usepackage{circuitikz}
+\usepackage{caption}
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+\lstset{ %
+  backgroundcolor=\color{white},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}; should come as last argument
+  basicstyle=\normalsize,        % the size of the fonts that are used for the code
+  breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+  breaklines=true,                 % sets automatic line breaking
+  captionpos=b,                    % sets the caption-position to bottom
+  commentstyle=\color{mygreen},    % comment style
+  deletekeywords={...},            % if you want to delete keywords from the given language
+  escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+  extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+  frame=single,	                   % adds a frame around the code
+  keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+  keywordstyle=\color{blue},       % keyword style
+  language=python,                  % the language of the code
+  morekeywords={*,...},            % if you want to add more keywords to the set
+  numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
+  numbersep=5pt,                   % how far the line-numbers are from the code
+  numberstyle=\tiny\color{mygray}, % the style that is used for the line-numbers
+  rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+  showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+  showstringspaces=false,          % underline spaces within strings only
+  showtabs=false,                  % show tabs within strings adding particular underscores
+  stepnumber=2,                    % the step between two line-numbers. If it's 1, each line will be numbered
+  stringstyle=\color{mymauve},     % string literal style
+  tabsize=2,	                   % sets default tabsize to 2 spaces
+  title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
+}
+\floatstyle{boxed}
+\floatstyle{plain}
+\restylefloat{figure}
+\pagestyle{fancy}
+\fancyhead{}
+\fancyfoot{}
+\setlength{\headheight}{59.0pt}
+\def\inputGnumericTable{}
+\fancyhead[CO]{\textbf{Air Force Institute of Technology\\Department of Electrical and Computer Engineering\\
+ Computer Communication Networks (CSCE-654) Project \#2\newline \newline Name: Micah Hayden}}
+\lhead{\today}
+\rhead{Page \thepage{} of \pageref{LastPage} }
+\newlength\tindent
+\setlength{\tindent}{\parindent}
+\setlength{\parindent}{0pt}
+\renewcommand{\indent}{\hspace*{\tindent}}
+\begin{document}
+
+%\begin{abstract}
+%This is my abstract.
+%\end{abstract}
+
+\section{Introduction:}
+\label{sec:Intro}
+
+
+\section{Expected Results:}
+\label{sec:ExpectedResults}
+
+
+\section{Simulation Setup:}
+\label{sec:SimSetup}
+
+
+\subsection{Routing:}
+\label{subsec:Routing}
+
+
+\subsection{Network Configuration:}  
+\label{subsec:Config}
+
+
+\section{Results \& Analysis:}
+\label{sec:Results}
+
+
+\subsection{Routing Accuracy \& Traffic Load:}
+\label{subsec:Routing}
+
+
+\subsection{System Delay:}
+\label{subsec:SysDelay}
+
+
+
+
+\section{Conclusions:}
+\label{sec:Conclusions}
+
+This project demonstrated the long term effects of a queuing system for different values of $\rho$.  
+When $\lambda$ is much less than $\mu$, the system is able to keep up, and produces minimal delays.  
+As $\lambda$ approaches $\mu$, the queue will increase in length; however, as long as $\lambda < \mu$, the system will still be stable.
+Once $\lambda = \mu$, the system becomes unstable, and will have a system delay and queue length that will grow indefinitely.
+
+Another interesting outcome of this experiment was seeing the effects of the propagation delay.  
+One would expect the two queues to have identical times in the long run; however, they were slightly different for all simulations.
+Because of these variations, using the average queue times and average lifetime to calculate the propagation delay produced a slightly different value than the constant specified in the simulation, as shown in Table \#\ref{tab:calcPropDelay}.
+This shows the inherent complexity of a system of queues, even when the queues have the same parameters for expected arrival rates and service rates.
+
+
+\newpage
+\section*{Appendix A:  Figures}
+\label{sec:Figures}
+
+
+
+\newpage
+\clearpage
+\section*{Appendix B:  Simulation Files}
+\label{sec:SimFiles}
+
+\begin{figure}[h!]
+\begin{lstlisting}
+
+\end{lstlisting}
+\vspace{-1cm}
+\caption*{Simulation Initialization File - omnetpp.ini}
+\end{figure}
+
+
+\newpage
+\begin{figure}[h!]
+\begin{lstlisting}
+
+\end{lstlisting}
+\vspace{-1cm}
+\caption*{NED FILE}
+\end{figure}
+
+\end{document}
