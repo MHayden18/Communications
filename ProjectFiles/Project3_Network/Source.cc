@@ -28,7 +28,7 @@ class Source : public cSimpleModule
 
   protected:
     virtual void initialize() override;
-    virtual void handleMessage(cMessage *msg);
+    virtual void handleMessage(cMessage *msg) override;
 };
 
 Define_Module(Source);

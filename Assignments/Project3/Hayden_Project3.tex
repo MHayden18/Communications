@@ -207,7 +207,7 @@ Tables \ref{tab:expSys1} and \ref{tab:expSys2} below show these times.
 \begin{minipage}{0.5\textwidth}
 \centering
 \begin{tabular}{|c|c|} \hline
-\textbf{Node} & \textbf{$\mathbf{E[r]_{node}}$ (s)} \\ \hline
+\textbf{Node} & \textbf{$\mathbf{E[r]}$ (s)} \\ \hline
 A & 0.200 \\ \hline
 B & 0.400 \\ \hline
 C & 0.400 \\ \hline
@@ -215,13 +215,13 @@ D & 0.160 \\ \hline
 E & 0.182 \\ \hline
 F & 0.143 \\ \hline
 \end{tabular}
-\captionof{table}{$E[r]$ for Case 1}
+\captionof{table}{Per-node system delay, $E[r]$, for Case 1}
 \label{tab:expSys1}
 \end{minipage}
 \begin{minipage}{0.5\textwidth}
 \centering
 \begin{tabular}{|c|c|} \hline
-\textbf{Node} & \textbf{$\mathbf{E[r]_{node}}$ (s)} \\ \hline
+\textbf{Node} & \textbf{$\mathbf{E[r]}$ (s)} \\ \hline
 A & 0.333 \\ \hline
 B & 0.667 \\ \hline
 C & 0.667 \\ \hline
@@ -229,7 +229,7 @@ D & 0.174 \\ \hline
 E & 0.204 \\ \hline
 F & 0.152 \\ \hline
 \end{tabular}
-\captionof{table}{$E[r]$ for Case 2}
+\captionof{table}{Per-node system delay, $E[r]$, for Case 2}
 \label{tab:expSys2}
 \end{minipage}
 \newline
@@ -244,7 +244,7 @@ This produces the following expected end-to-end delay (source to destination), f
 \begin{table}[h!]
 \centering
 \begin{tabular}{|c|c|c|} \hline
-\textbf{Node:} & \textbf{Case 1 Delay (s)} & \textbf{Case 2 Delay (s)} \\ \hline
+\textbf{Destination:} & \textbf{Case 1 Delay (s)} & \textbf{Case 2 Delay (s)} \\ \hline
 B & 0.660 & 1.060 \\ \hline
 C & 0.650 & 1.050 \\ \hline
 D & 0.860 & 1.274 \\ \hline
@@ -261,12 +261,12 @@ This yields the following:
 
 \begin{minipage}{0.5\textwidth}
 \begin{align*}
-\text{End-to-End Delay}_{Case \, 1} = 0.798s
+\text{Network Delay}_{Case \, 1} = 0.798s
 \end{align*}
 \end{minipage}
 \begin{minipage}{0.5\textwidth}
 \begin{align*}
-\text{End-to-End Delay}_{Case \, 2} = 1.210s
+\text{Network Delay}_{Case \, 2} = 1.210s
 \end{align*}
 \end{minipage}
 \newline 
@@ -283,15 +283,16 @@ To accomplish the required routing, I utilized a custom message type \textbf{Net
 
 I assigned each destination node a unique integer. \footnote{To account for the duplicate paths to node E, there were two integers for E}.
 The source node generates a random integer between 1 and 100, inclusive.  Based on the random number, it assigns a corresponding destination node.
-As the number of messages grows, the distribution of destinations approaches the desired proportions.
+As the number of messages grows, the distribution of destinations should approach the desired proportions.
 
 The other modifications required were to detect whether a packet had arrived at its destination; and if not, to send it out on the appropriate link.
-I modified the Fifo module's ``endService" function.
+To accomplish this task, I modified the Fifo module's ``endService" function.
 Previously, when the queue finished processing a packet, it immediately sent it out on the sole port.
 The modifications change this to function to check if the packet's destination matches the queue's index.  
 If so, the queue sends the packet to the sink node.
 Otherwise, it uses simple logic to determine which of its outbound ports to send the message on.
 The code for both of these operations are shown in Appendix \ref{appendix:SimFiles}.
+
 
 \subsection{Network Configuration:}  
 \label{subsec:Config}
@@ -299,6 +300,20 @@ I defined my network using an array of FIFO queues and sinks, as well as a singl
 The connections account for the propagation delay on each link.
 This topology matches that shown in Figure \ref{fig:Topology}.
 
+
+\subsection{Data Collection:}
+\label{subsec:DataCollection}
+There are several pieces of data which need to be collected during the simulation.
+The first is the packet count at each sink, which will allow a comparison of each destination's traffic load.
+Next is the packet lifetime.  
+This statistic is used to compare the source-destination time for each packet.
+Combined with the packet count, this will also allow the calculation of an overall network delay.
+
+In order to properly analyze the system response to the network routing presented, I also need to collect data on each queues system time.
+I modified the AbstractFifo.h and AbstractFifo.c files, which govern the FIFO queue nodes, by adding two new statistics:  serviceTime and nodeTime.
+These values, in conjunction with the already-existing queueingTime statistic, will allow a comparison of the time spent at each node, and are collected immediately prior to sending the message from the queue to its destination.
+
+\newpage
 \section{Results \& Analysis:}
 \label{sec:Results}
 I conducted three simulations for each case, ensuring the results matched with different seeds and produced accurate results.
@@ -309,38 +324,62 @@ I collected data to compare the lifetime of packets at each node, as well as the
 To determine the routing accuracy and traffic load, I averaged the number of packets that arrived at each destination for each of the three simulation runs.  
 The traffic load was then calculated as a percentage of the number of total packets arriving to any destination for the respective case.
 
-As seen in Figures \ref{fig:loadA} and \ref{fig:loadB}, my results closely matched the expected traffic load.
-\newline
+As seen in Figures \ref{fig:loadA} and \ref{fig:loadB}, my results closely matched the expected traffic load described in Table \ref{tab:expTrafficLoad}
 
 \begin{minipage}{0.5\textwidth}
 \centering
-\includegraphics[scale=0.75]{Images/LoadA.PNG}
+\includegraphics[scale=0.7]{Images/LoadA.PNG}
 \captionof{figure}{Traffic Load with $\lambda_A = 15 \, pps$}
 \label{fig:loadA}
 \end{minipage}
 \begin{minipage}{0.5\textwidth}
 \centering
-\includegraphics[scale=0.75]{Images/LoadB.PNG}
+\includegraphics[scale=0.7]{Images/LoadB.PNG}
 \captionof{figure}{Traffic Load with $\lambda_A = 17 \, pps$}
 \label{fig:loadB}
 \end{minipage}
 \newline
 
-The raw data used to build Figures \ref{fig:loadA} and \ref{fig:loadB} is shown in Appendix \ref{appendix:Data}.
-\subsection{System Delay:}
-\label{subsec:SysDelay}
-I used the statistics collected at each sink node to compare the per-node average delay for each case.
-Both Case 1 and Case 2 performed well, with results closely matching the expectations.  
-As expected, the largest end-to-end delays were at Nodes D-F. 
-This occurs because to reach those nodes, they must go through two queue nodes, and two links before arriving at their destination's queue.
-The per-node end-to-end delays for Case 1 produced an average percent difference of $0.21\%$ from the expected delays, while Case 2 had an average percent difference of $0.893\%$.\footnote{This \% difference simply averaged the \% differences for each node, not based on the traffic load of each node.}
-Tables \ref{tab:nodeDelayA} and \ref{tab:nodeDelayB}, shown in Appendix \ref{appendix:Data}, show the per-node delays.
+The largest load difference was Case 1, with nodes C and E:  node C had $0.05\%$ less traffic than expected, while node E had $0.04\%$ more.\footnote{The raw data used to build Figures \ref{fig:loadA} and \ref{fig:loadB} is shown in Appendix \ref{appendix:Data}.}
 
-I calculated the average end-to-end delay for Cases 1 and 2 by using a weighted average of system delays for destinations B-F.
-This weighted average used the observed traffic loads, as discussed in Section \ref{subsec:RoutingResults}, as the weights; and the system delays reported by each sink as the data, shown in Tables \ref{tab:nodeDelayA} and \ref{tab:nodeDelayB}.
+
+\subsection{Per-Node System Times}
+\label{subsec:systemTimes}
+This section discusses how well each node performed, relative to the expected system times of Nodes A-F.
+I used the \textbf{nodeTimeSignal} created for the FIFO nodes to measure the time spent at a given queue, to include the service time.
+I aggregated the results for the three trials of each case, and used the aggregated value to compute the simulation average for each node.
+I then compared the simulation results to the expected nodal delays described in Tables \ref{tab:expSys1} and \ref{tab:expSys2} in Section \ref{sec:ExpectedResults}.
+Case 1 - $\lambda_A = 15$ pps - had an average difference of $0.343 \%$ from the expected nodal delays, while Case 2 - $\lambda_A = 17$ pps - had an average difference of $0.714\%$.
+The data are shown in Tables \ref{tab:simNodeTimeA} and \ref{tab:simNodeTimeB} in Appendix \ref{appendix:Data}.
+The accuracy of the simulation indicates that the the model utilized for this network matches the actual implementation.
+
+
+\subsection{Network Delay:}
+\label{subsec:NetworkDelay}
+I used the statistics collected at each sink node to compare the per-destination average delay.
+Both Case 1 and Case 2 performed well, with results closely matching the expectations.  
+As expected, the largest end-to-end delays occurred when the destination was one of Nodes D-F. 
+This occurs because to reach these destinations, they must go through two queue nodes, and two links before arriving at their destination's queue.
+The per-destination end-to-end delays for Case 1 produced an average percent difference of $0.21\%$ from the expectation, while Case 2 had an average \% difference of $0.893\%$.\footnote{This \% difference simply averaged the \% differences for each destination's end-to-end delay, not based on the traffic load of each node.}
+
+I calculated the network's average end-to-end delay for Cases 1 and 2 by using a weighted average of each destination's end-to-end delay, using the traffic load as the weight.
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c|c|c|} \hline
+\textbf{Case \#} & \textbf{Average Network Delay (s)} & \textbf{Expected Delay (s)} & \textbf{\% Difference} \\ \hline
+1 & 0.7997 & 0.7976 & 0.258 \\ \hline
+2 & 1.1996 & 1.2095 & 0.822 \\ \hline
+\end{tabular}
+\caption{Average System Delays}
+\label{tab:lifetime}
+\end{table}
+
 
 The average end-to-end delay for Case 1 was 0.7997 seconds, a $0.26 \%$ difference than the expected result.
-The average end-to-end delay for Case 2 was 1.996 seconds, a $0.822 \%$ difference than the expected result.
+The average end-to-end delay for Case 2 was 1.1996 seconds, a $0.822 \%$ difference than the expected result.
+Figure \ref{fig:meanSysDelay} shows these results graphically, reinforcing the impact of the arrival rate on the long-term system response.
+A change in arrival rate from 15 to 17 pps increased the expected delay by 0.4 seconds.
 
 \begin{figure}[h!]
 \centering
@@ -351,6 +390,7 @@ The average end-to-end delay for Case 2 was 1.996 seconds, a $0.822 \%$ differen
 
 Figure \ref{fig:meanSysDelay} ends at $t=3500$ seconds, although the simulation ran to 36,000 seconds.  
 This decision was made to better show how the end-to-end delay stabilized as time increased.
+
 
 \subsection{Routing Decisions}
 For my initial simulations, I used the assumption that splitting the traffic evenly between nodes B and C would produce the best overall system delay.
@@ -381,7 +421,13 @@ Any gains because of a reduced propagation delay are negated by the correspondin
 
 \section{Conclusions:}
 \label{sec:Conclusions}
-
+This project worked as a functional model of simulated network traffic.
+The traffic loads in simulation closely matched the desired network loads, with minor variations due to the probabilistic generation of destinations.
+One can see the effects of the path length:  nodes D-F had a larger effect of propagation delay because they had to go through two paths.
+On the other hand, nodes B and C only encounter a single propagation delay, on the path from node A.
+Because all of the queues are stable, the throughput of a node $i$ is equivalent to the arrival rate $\lambda_i$.
+This allows us to analyze the network as a sequence of M/M/1 queues because the interarrival times will still be exponentially distributed.
+If queues B or C were were unstable, destinations D-F would need further analysis to accurately model.
 
 
 \newpage
@@ -417,11 +463,44 @@ F & 122293 & 19.99 \\ \hline
 \label{tab:appTrafficB}
 \end{minipage}
 
-\subsection*{Per Node End-to-End Delay}
+\subsection*{Per-Node System Delay}
+The following tables show the delay measured at each FIFO node in the system from the time a message entered a node's queue to the time it left its service.
+
 \begin{table}[h!]
 \centering
 \begin{tabular}{|c|c|c|c|} \hline
 \textbf{Node} & \textbf{Average Delay (s)} & \textbf{Expected Delay (s)} & \textbf{\% Difference} \\ \hline
+A & 0.2008 & 0.2000 & 0.3958 \\ \hline
+B & 0.3996 & 0.4000 & 0.0928 \\ \hline
+C & 0.4006 & 0.4000 & 0.1541 \\ \hline
+D & 0.1605 & 0.1600 & 0.2938 \\ \hline
+E & 0.1833 & 0.1818 & 0.7876 \\ \hline
+F & 0.1433 & 0.1429 & 0.3311 \\ \hline
+\end{tabular}
+\caption{System Delay for Nodes A-F with $\lambda_A = 15$ pps}
+\label{tab:simNodeTimeA}
+\end{table}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c|c|c|} \hline
+\textbf{Node} & \textbf{Average Delay (s)} & \textbf{Expected Delay (s)} & \textbf{\% Difference} \\ \hline
+A & 0.3326 & 0.3333 & 0.2250 \\ \hline
+B & 0.6516 & 0.6667 & 2.2587 \\ \hline
+C & 0.6630 & 0.6667 & 0.5501 \\ \hline
+D & 0.1738 & 0.1739 & 0.0400 \\ \hline
+E & 0.2051 & 0.2041 & 0.4802 \\ \hline
+F & 0.1504 & 0.1515 & 0.7313 \\ \hline
+\end{tabular}
+\caption{System Delay for Nodes A-F with $\lambda_A = 17$ pps}
+\label{tab:simNodeTimeB}
+\end{table}
+
+\subsection*{Per Destination End-to-End Delay}
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c|c|c|} \hline
+\textbf{Destination} & \textbf{Average Delay (s)} & \textbf{Expected Delay (s)} & \textbf{\% Difference} \\ \hline
 B & 0.660 & 0.660 & 0.007 \\ \hline
 C & 0.651 & 0.650 & 0.144 \\ \hline
 D & 0.861 & 0.860 & 0.105 \\ \hline
@@ -436,7 +515,7 @@ F & 0.806 & 0.803 & 0.410 \\ \hline
 \begin{table}[h!]
 \centering
 \begin{tabular}{|c|c|c|c|} \hline
-\textbf{Node} & \textbf{Average Delay (s)} & \textbf{Expected Delay (s)} & \textbf{\% Difference} \\ \hline
+\textbf{Destination} & \textbf{Average Delay (s)} & \textbf{Expected Delay (s)} & \textbf{\% Difference} \\ \hline
 B & 1.042 & 1.060 & 1.690 \\ \hline
 C & 1.045 & 1.050 & 0.502 \\ \hline
 D & 1.257 & 1.274 & 1.292 \\ \hline

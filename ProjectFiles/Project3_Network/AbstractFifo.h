@@ -31,6 +31,8 @@ class AbstractFifo : public cSimpleModule
     simsignal_t qlenSignal;
     simsignal_t busySignal;
     simsignal_t queueingTimeSignal;
+    simsignal_t serviceTimeSignal;
+    simsignal_t nodeTimeSignal;
 
   public:
     AbstractFifo();

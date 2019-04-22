@@ -31,6 +31,8 @@ void AbstractFifo::initialize()
     qlenSignal = registerSignal("qlen");
     busySignal = registerSignal("busy");
     queueingTimeSignal = registerSignal("queueingTime");
+    serviceTimeSignal = registerSignal("serviceTime");
+    nodeTimeSignal = registerSignal("nodeTime");
     emit(qlenSignal, queue.getLength());
     emit(busySignal, false);
 }
@@ -46,8 +48,11 @@ void AbstractFifo::handleMessage(cMessage *msg)
         else {
             msgServiced = (cMessage *)queue.pop();
             emit(qlenSignal, queue.getLength());
+            simtime_t queueTime = simTime() - msgServiced->getTimestamp();
             emit(queueingTimeSignal, simTime() - msgServiced->getTimestamp());
             simtime_t serviceTime = startService(msgServiced);
+            emit(serviceTimeSignal, serviceTime);
+            emit(nodeTimeSignal, serviceTime + queueTime);
             scheduleAt(simTime()+serviceTime, endServiceMsg);
         }
     }
@@ -56,6 +61,8 @@ void AbstractFifo::handleMessage(cMessage *msg)
         msgServiced = msg;
         emit(queueingTimeSignal, SIMTIME_ZERO);
         simtime_t serviceTime = startService(msgServiced);
+        emit(serviceTimeSignal, serviceTime);
+        emit(nodeTimeSignal, serviceTime);
         scheduleAt(simTime()+serviceTime, endServiceMsg);
         emit(busySignal, true);
     }

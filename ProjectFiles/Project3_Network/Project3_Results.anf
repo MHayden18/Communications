@@ -79,6 +79,9 @@
         </items>
       </items>
     </datasets>
+    <datasets name="NodeA_qTime">
+      <items xsi:type="scave:Add" filterPattern="run(NetworkA*) AND name(queueingTime:vector) AND module( Network_Forward.fifo[0]) " type="VECTOR"/>
+    </datasets>
   </datasets>
   <chartSheets>
     <chartSheets name="default" charts="//@datasets/@datasets.0/@items.5 //@datasets/@datasets.1/@items.0/@items.3 //@datasets/@datasets.1/@items.1/@items.3"/>
