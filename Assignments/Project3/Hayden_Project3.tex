@@ -150,20 +150,13 @@ Load_{A \rightarrow C} 	&= Load_C + Load_F + \frac{1}{2} \cdot Load_E \\
 \vspace{.25cm}
 \end{minipage}
 
-This indicates that links $A \rightarrow B$ and $A \rightarrow C$ will each receive half of the traffic departing $A$.
-Because $\mu_A > \lambda_A$, the departure rate of $A$ equals $\lambda_A$.
+This shows that links $A \rightarrow B$ and $A \rightarrow C$ will each receive half of the traffic departing $A$.
+Because $\mu_A > \lambda_A$, the $\text{Throughput}_A = \lambda_A$.
 Thus, the arrival rate of nodes $B$ and $C$ equals $0.5 \cdot \lambda_A$.
-The departure rate from $B$ and $C$ must also equal their respective arrival rates because $\mu_B = \mu_C = 10 \, pps$, and $10 \, pps > 0.5 \cdot \lambda_A$ for both cases.
-
-Nodes $B$ and $C$ follow a similar pattern, but must also account for traffic routed to the sink (i.e. packets at $B$ with destination = $B$).
-Because the system is stable, the throughput of any node equals the node's arrival rate.
-Thus, the below equation must hold
-\begin{equation}
-\lambda_{dest} = \lambda_{source} \cdot \frac{\sum \text{load of all links from destination}}{\sum \text{load of all links from source}}
-\label{eq:arrivalRates}
-\end{equation}
-
-I utilized the above relationship to determine the actual arrival rates of each node for cases 1 and 2.\footnote{$\lambda_E$ is the sum of its arrival rates from $B$ and $C$.}
+Because $\mu_B = \mu_C = 10 \, pps$, and $10 \, pps > 0.5 \cdot \lambda_A$ for both cases, their throughput equals their arrival rates.  
+In summary, because all queues in this system are stable, the throughput of any node equals the node's arrival rate.
+It follows that any child node's arrival rate equals the percentage of the parent node's traffic that the child receives.
+This yields the following arrival rates for cases 1 and 2.\footnote{$\lambda_E$ is the sum of its arrival rates from $B$ and $C$.}
 \newline
 
 \begin{minipage}{0.5\textwidth}
@@ -223,9 +216,9 @@ F & 0.143 & 0.152 \\ \hline
 The times shown above indicate the time in the system \textbf{at} a particular node.
 To find the expected system delay of a packet from source to its destination, one must also account for all nodes and propagation delays along its path.
 For Node E, one must account for the separate paths to reach $E$.
-Because half of its traffic goes through B and the other through C, this can be represented as the average system delay of 2 packets:  one going through B and the other through C.
+Because half of its traffic goes through B and the other through C, this can be represented as the average system delay of 2 packets:  one going through B and the other through C to destination E.
 
-This produces the following expected end-to-end delay (source to destination), for packets routed to each node:
+This produces the following expected end-to-end delay (source to destination), for packets routed to each destination:
 
 \begin{table}[h!]
 \centering
@@ -268,7 +261,7 @@ Each simulation run was 10 hours of sim-time.
 \label{subsec:RoutingSetup}
 To accomplish the required routing, I utilized a custom message type \textbf{Netmsg}, which uses an integer to represent its destination.
 
-I assigned each destination node a unique integer. \footnote{To account for the duplicate paths to node E, there were two integers for E}.
+I assigned each destination node a unique integer. \footnote{To account for the duplicate paths to node E, there were two integers for E, one for each path}.
 The source node generates a random integer between 1 and 100, inclusive.  Based on the random number, it assigns a corresponding destination node.
 As the number of messages grows, the distribution of destinations should approach the desired proportions.
 
@@ -283,9 +276,9 @@ The code for both of these operations are shown in Appendix \ref{appendix:SimFil
 
 \subsection{Network Configuration:}  
 \label{subsec:Config}
-I defined my network using an array of FIFO queues and sinks, as well as a single generator.
+I defined my network using an array of six FIFO queues and six sinks, as well as a single generator.
 The connections account for the propagation delay on each link.
-This topology matches that shown in Figure \ref{fig:Topology}.
+This topology matches that shown in Figure \ref{fig:Topology}.\footnote{There is a sink connected to A to ensure the simulator functioned properly, but is not shown on the network diagram.}
 
 
 \subsection{Data Collection:}
