@@ -53,7 +53,13 @@ void Source::handleMessage(cMessage *msg)
     ASSERT(msg == sendMessageEvent);
 
     cMessage *job = new cMessage("job");
-    send(job, "out");
+    int prob = intuniform(1, 100);
+    if (prob <= 51 ) {
+        send(job, "out", 0);
+    }
+    else {
+        send(job, "out", 1);
+    }
 
     scheduleAt(simTime()+par("sendIaTime").doubleValue(), sendMessageEvent);
 }

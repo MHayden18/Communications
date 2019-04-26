@@ -17,10 +17,6 @@ network Testing
             parameters:
                 @display("p=81,77");
         }
-        gen2: Source {
-            parameters:
-                @display("p=81,157");
-        }
         fifo1: Fifo {
             parameters:
                 @display("p=209,77");
@@ -34,10 +30,10 @@ network Testing
                 @display("p=329,227");
         }
     connections:
-        gen1.out --> fifo1.in;
+        gen1.out++ --> fifo1.in;
         fifo1.out --> sink.in++;
 
-        gen2.out --> fifo2.in;
+        gen1.out++ --> fifo2.in;
         fifo2.out --> sink.in++;
 }
 

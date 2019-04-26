@@ -18,7 +18,7 @@ simple Source
         volatile double sendIaTime @unit(s);
         @display("i=block/source");
     gates:
-        output out;
+        output out[];
 }
 
 
