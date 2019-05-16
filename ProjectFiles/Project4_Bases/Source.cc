@@ -67,7 +67,6 @@ void Source::handleMessage(cMessage *msg)
     int dest;
     int probDest;
     if (probSrc <= 4072) { // Src = Hickam
-        // Destination = B
         src = HIC;
         probDest = intuniform(1, 10000);
         if (probDest <= 506 ) { // Cheyenne
@@ -82,27 +81,71 @@ void Source::handleMessage(cMessage *msg)
         else { // Ramstein
              dest = RAM;
         }
-        job -> setDestination( dest );
-        send(job, "out", src);
     }
     else if (probSrc <= 5155) { // Src = Cheyenne
         src = CHE;
-
+        if (probDest <= 2381 ) { // Hickam
+            dest = HIC;
+        }
+        else if (probDest <= 7141) { // Qatar
+            dest = QAT;
+        }
+        else if (probDest <= 9524) { // Langley
+             dest = LAN;
+        }
+        else { // Ramstein
+             dest = RAM;
+        }
     }
     else if (probSrc <= 6701) { // Src = Qatar
         src = QAT;
-
+		if (probDest <= 1667 ) { // Hickam
+            dest = HIC;
+        }
+        else if (probDest <= 5000) { // Cheyenne
+            dest = CHE;
+        }
+        else if (probDest <= 8333) { // Langley
+             dest = LAN;
+        }
+        else { // Ramstein
+             dest = RAM;
+        }
     }
     else if (probSrc <= 8247) { // Src = Langley
         src = LAN;
-
+		if (probDest <= 1667 ) { // Hickam
+            dest = HIC;
+        }
+        else if (probDest <= 5000) { // Qatar
+            dest = CHE;
+        }
+        else if (probDest <= 8333) { // Langley
+             dest = QAT;
+        }
+        else { // Ramstein
+             dest = RAM;
+        }
     }
     else {          // Src = Ramstein
         src = RAM;
+		if (probDest <= 1471 ) { // Hickam
+            dest = HIC;
+        }
+        else if (probDest <= 2647) { // Cheyenne
+            dest = CHE;
+        }
+        else if (probDest <= 4118) { // Qatar
+             dest = QAT;
+        }
+        else { // Langley
+             dest = LAN;
+        }
     }
-
-    job->setDestination( dest );
-    send(job, "out");
+	// I now have source, destination pairs:
+	//send to the "src" queue, with the set destination
+	job -> setDestination( dest );
+    send(job, "out", src);
 
     scheduleAt(simTime()+par("sendIaTime").doubleValue(), sendMessageEvent);
 }
