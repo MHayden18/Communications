@@ -40,10 +40,10 @@ network Base_Network
         sink[5]: Sink {
             @display("p=511,259,c");
         }
-        milSat_21[2]: Satellite {
+        milSat_21[2]: Fifo {
             @display("p=228,499");
         }
-        milSat_100[2]: Satellite {
+        milSat_100[2]: Fifo {
             @display("p=228,42");
         }
         unusedSink: Sink {
@@ -65,8 +65,8 @@ network Base_Network
         srcBase[0].out++ --> {  delay = 18.00 ms; } --> Hickam[1].in++;
         srcBase[0].out++ --> {  delay = 46.67 ms; } --> Hickam[2].in++;
         // Hickam --> Langley, use a satellite link
-        srcBase[0].out++ --> {  delay = 131.0 ms; } --> milSat_100[0].in; // Hickam --> Langley, use a satellite link
-        milSat_100[0].out --> {  delay = 126.0 ms; } --> Hickam[3].in++;
+        srcBase[0].out++ --> {  delay = 131.0 ms; } --> milSat_100[0].in++; // Hickam --> Langley, use a satellite link
+        milSat_100[0].out++ --> {  delay = 126.0 ms; } --> Hickam[3].in++;
         srcBase[0].out++ --> {  delay = 40.00 ms; } --> Hickam[4].in++;
 
 		// Source = Cheyenne
@@ -84,23 +84,23 @@ network Base_Network
         srcBase[2].out++ --> {  delay = 15.33 ms; } --> Qatar[4].in++;
 
 		// Source = Langley
-        srcBase[3].out++ --> {  delay = 126.0 ms; } --> milSat_100[1].in;
+        srcBase[3].out++ --> {  delay = 126.0 ms; } --> milSat_100[1].in++;
         // Langley --> Hickam, use satellite
-        milSat_100[1].out --> {  delay = 131.0 ms; } --> Langley[0].in++;	// Langley --> Hickam, use satellite
+        milSat_100[1].out++ --> {  delay = 131.0 ms; } --> Langley[0].in++;	// Langley --> Hickam, use satellite
         srcBase[3].out++ --> {  delay = 08.33 ms; } --> Langley[1].in++;
         srcBase[3].out++ --> {  delay = 37.33 ms; } --> Langley[2].in++;
         srcBase[3].out++ --> {  delay = 00.00 ms; } --> Langley[3].in++;
         // Langley --> Ramstein, use satellite
-        srcBase[3].out++ --> {  delay = 132.5 ms; } --> milSat_21[0].in;  // Langley --> Ramstein, use satellite
-        milSat_21[0].out --> {  delay = 128.0 ms; } --> Langley[4].in++;
+        srcBase[3].out++ --> {  delay = 132.5 ms; } --> milSat_21[0].in++;  // Langley --> Ramstein, use satellite
+        milSat_21[0].out++ --> {  delay = 128.0 ms; } --> Langley[4].in++;
 
 		// Source = Ramstein
         srcBase[4].out++ --> {  delay = 40.00 ms; } --> Ramstein[0].in++;
         srcBase[4].out++ --> {  delay = 27.33 ms; } --> Ramstein[1].in++;
         srcBase[4].out++ --> {  delay = 15.33 ms; } --> Ramstein[2].in++;
         // Ramstein --> Langley, use satellite
-        srcBase[4].out++ --> {  delay = 128.0 ms; } --> milSat_21[1].in; // Ramstein --> Langley, use satellite
-        milSat_21[1].out --> {  delay = 132.5 ms; } --> Ramstein[3].in++;
+        srcBase[4].out++ --> {  delay = 128.0 ms; } --> milSat_21[1].in++; // Ramstein --> Langley, use satellite
+        milSat_21[1].out++ --> {  delay = 132.5 ms; } --> Ramstein[3].in++;
         srcBase[4].out++ --> {  delay = 00.00 ms; } --> Ramstein[4].in++;
 
         // Output gates to sinks --> i = destination, send to destination sink
