@@ -38,7 +38,7 @@ void Satellite::initialize()
 
 void Satellite::handleMessage(cMessage *msg)
 {
-    send(msg, "out");
+    send(msg, "out", 0);
     EV << "Sending " << msg->getName() << " from satellite link ";
 }
 

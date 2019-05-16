@@ -22,19 +22,19 @@ network Base_Network
             @display("p=138,259,c");
         }
         Hickam[5]: Fifo {
-            @display("p=356,106");
+            @display("p=356,106,c");
         }
         Cheyenne[5]: Fifo {
-            @display("p=356,179");
+            @display("p=356,179,c");
         }
         Qatar[5]: Fifo {
-            @display("p=356,259");
+            @display("p=356,259,c");
         }
         Langley[5]: Fifo {
-            @display("p=356,353");
+            @display("p=356,353,c");
         }
         Ramstein[5]: Fifo {
-            @display("p=356,439");
+            @display("p=356,439,c");
         }
         // Five sinks, one per base:
         sink[5]: Sink {
@@ -47,6 +47,7 @@ network Base_Network
             @display("p=228,42");
         }
         unusedSink: Sink {
+            @display("p=67.968,418.428");
         }
 
     // fifo[1]-fifo[5] correspond to fifoB --> fifoF
@@ -113,7 +114,10 @@ network Base_Network
             // Need to connect srcBase sinks to something
             srcBase[i].sink --> unusedSink.in++;
         }
-
+        for i=0..1 {
+        	milSat_21[i].sink --> unusedSink.in++;
+        	milSat_100[i].sink --> unusedSink.in++;
+        }
 }
 
 

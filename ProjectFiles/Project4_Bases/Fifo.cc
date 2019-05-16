@@ -28,7 +28,12 @@ void Fifo::endService(cMessage *msg)
         send(msg, "sink");
     }
     else {
-		send(msg, "out", dest);
+        if (gateSize("out") > 1) {
+            send(msg, "out", dest);
+        }
+        else {
+            send(msg, "out", 0);
+        }
     }
 }
 
