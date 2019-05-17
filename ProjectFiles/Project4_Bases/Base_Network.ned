@@ -14,11 +14,7 @@ network Base_Network
 {
     @display("bgb=564,527");
     submodules:
-        gen: Source {
-            parameters:
-                @display("p=45,259");
-        }
-        srcBase[5]: Fifo {
+        srcBase[5]: Source {
             @display("p=138,259,c");
         }
         Hickam[5]: Fifo {
@@ -50,13 +46,7 @@ network Base_Network
             @display("p=67.968,418.428");
         }
 
-    // fifo[1]-fifo[5] correspond to fifoB --> fifoF
     connections:
-        gen.out++ --> srcBase[0].in++;
-        gen.out++ --> srcBase[1].in++;
-        gen.out++ --> srcBase[2].in++;
-        gen.out++ --> srcBase[3].in++;
-        gen.out++ --> srcBase[4].in++;
 
         // Send to appropriate source/dest pair FIFO:
         // We will account for propagation delays on the srcBase --> srcDest link, even though theoretically it is after the transmission
@@ -111,8 +101,6 @@ network Base_Network
             Qatar[i].sink --> sink[i].in++;
             Langley[i].sink --> sink[i].in++;
             Ramstein[i].sink --> sink[i].in++;
-            // Need to connect srcBase sinks to something
-            srcBase[i].sink --> unusedSink.in++;
         }
         for i=0..1 {
         	milSat_21[i].sink --> unusedSink.in++;

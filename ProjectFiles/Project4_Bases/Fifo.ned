@@ -21,9 +21,9 @@ simple Fifo
         @signal[queueingTime](type="simtime_t");
         @signal[serviceTime](type="simtime_t");
         @signal[nodeTime](type="simtime_t");
-        @statistic[qlen](title="queue length";record=vector,timeavg,max;interpolationmode=sample-hold);
+        @statistic[qlen](title="queue length";record=mean,max);//vector,timeavg,max;interpolationmode=sample-hold);
         //@statistic[busy](title="server busy state";record=vector?,timeavg;interpolationmode=sample-hold);
-        @statistic[queueingTime](title="queueing time at dequeue";unit=s;record=vector,mean,max;interpolationmode=none);
+        @statistic[queueingTime](title="queueing time at dequeue";unit=s;record=mean,max);//record=vector,mean,max;interpolationmode=none);
         //@statistic[serviceTime](title="time in service";unit=s;record=vector,mean,max;interpolationmode=none);
         @statistic[nodeTime](title="system time at node";unit=s;record=vector,mean,max;interpolationmode=none);
     gates:
