@@ -7,17 +7,25 @@
   <datasets>
     <datasets name="Lifetime">
       <items xsi:type="scave:Add" filterPattern="name(lifetime:vector) " type="VECTOR"/>
+      <items xsi:type="scave:Apply" operation="merger"/>
       <items xsi:type="scave:Apply" operation="mean"/>
-      <items xsi:type="scave:LineChart" name="" lineNameFormat="">
+      <items xsi:type="scave:LineChart" name="Lifetime" lineNameFormat="">
+        <properties name="Graph.Title" value=" "/>
+        <properties name="Graph.Title.Font" value="Arial-regular-12"/>
+        <properties name="X.Axis.Title" value="Simulation Time (s)"/>
+        <properties name="Y.Axis.Title" value="Mean End-End Delay (s)"/>
+        <properties name="Legend.Display" value="true"/>
+        <properties name="Legend.Anchoring" value="NorthWest"/>
         <properties name="Line.Name/Base_Network.sink[0]" value="Hickam"/>
         <properties name="Line.Name/Base_Network.sink[1]" value="Cheyenne"/>
         <properties name="Line.Name/Base_Network.sink[2]" value="Qatar"/>
         <properties name="Line.Name/Base_Network.sink[3]" value="Langley"/>
         <properties name="Line.Name/Base_Network.sink[4]" value="Ramstein"/>
+        <properties name="Line.Name/C:/Users/Micah Hayden/Documents/AFIT/SP2019/CSCE 654 - Communications/ProjectFiles/Project4_Bases/.computed/computed3348730820203684087.vec Base_Network.sink[3] merger(mean(merger(lifetime:vector;lifetime:vector;lifetime:vector)))" value="Total"/>
       </items>
     </datasets>
   </datasets>
   <chartSheets>
-    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.2"/>
+    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.3"/>
   </chartSheets>
 </scave:Analysis>
